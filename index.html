@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Kenko Growth Autopilot</title>
+<title>Kenko Growth Autopilot | Finance walkthrough</title>
 
 <style>
 :root{--bg:#f1f4f5;--pn:#fff;--ink:#11202a;--mu:#586a76;--ln:#d6dee3;--bl:#0f6e8c;--F:#e8590c;--R:#c92a2a;--A:#d99a00;--G:#2b9348;
@@ -62,6 +62,7 @@ footer{margin-top:36px;border-top:1px solid var(--ln);padding-top:14px;font-size
 @media(max-width:700px){#bridge{grid-template-columns:1fr 1fr}.tourbar{gap:6px;padding:6px 8px}.tourbar p{font-size:.84rem}.tab,.tab [id]{scroll-margin-top:150px}.g2,.grid,.kpi{grid-template-columns:minmax(0,1fr)}.grid>*{min-width:0}}
 #segmentHeading{margin-bottom:12px}#tourStep{font-size:.85rem}.tourbar{scroll-margin:0}
 @media(prefers-reduced-motion:no-preference){#led .bar .t{transform-origin:left;animation:ledgerReveal .5s ease-out}@keyframes ledgerReveal{from{transform:scaleX(0)}to{transform:scaleX(1)}}}
+.review{margin:16px 0}.casehead{display:flex;align-items:baseline;justify-content:space-between;gap:8px;flex-wrap:wrap}.casehead strong{color:var(--bl);font-size:.85rem}#blockerCases{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(280px,100%),1fr));gap:16px}.casecard,.econDecision{background:var(--bg);padding:14px;border-left:3px solid var(--bl);margin:8px 0}.casecard dt{font-weight:700;font-size:.83rem;margin-top:6px}.casecard dd{margin:0;font-size:.9rem}.casecard dl{margin:6px 0}#economicsKpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(180px,100%),1fr));gap:10px;margin:12px 0}#economicsKpis div{background:var(--bg);padding:10px}#economicsKpis strong{display:block;font:700 1.35rem var(--hf)}
 </style>
 </head>
 <body>
@@ -71,7 +72,7 @@ footer{margin-top:36px;border-top:1px solid var(--ln);padding-top:14px;font-size
 <p class="mu" style="margin-top:10px">Follow a studio from portfolio review through migration, first billing and product investment. All accounts and financial terms are illustrative.</p>
 <nav aria-label="Views"><button data-tab="cc" aria-pressed="true">Command center</button><button data-tab="ob" aria-pressed="false">Onboarding accelerator</button><button data-tab="gl" aria-pressed="false">Go-live assurance</button><button data-tab="pl" aria-pressed="false">Product demand ledger</button></nav>
 </header>
-<div class="tourbar" role="region" aria-label="Guided walkthrough"><button id="auto" class="pri">Run full demo</button><button id="exitTour" hidden>Exit tour</button><b id="tourStep">Four views</b><p id="tourCopy" aria-live="polite">Run the full demo or select a tab to play from that view.</p></div>
+<div class="tourbar" role="region" aria-label="Guided walkthrough"><button id="auto" class="pri">Run full demo</button><button id="exitTour" hidden>Exit tour</button><b id="tourStep">Four views</b><p id="tourCopy" aria-live="polite">The walkthrough plays automatically. Pause to inspect any account.</p></div>
 
 <section id="cc" class="tab on">
 <div class="kpi" id="kpi"></div>
@@ -102,6 +103,10 @@ footer{margin-top:36px;border-top:1px solid var(--ln);padding-top:14px;font-size
 <section class="pn" id="finance"><h2>First-invoice forecast</h2><p id="asof" class="mu"></p><div id="bridge"></div><div id="decision"></div>
 <div class="wide"><table class="tb"><caption style="text-align:left">Eight sample contracts · first invoice only</caption><thead><tr><th>Studio</th><th>Billing starts</th><th>First invoice</th><th>Launch: committed → forecast / actual</th><th>Next gate</th><th>Close impact</th></tr></thead><tbody id="exposure"></tbody></table></div>
 <p class="sm mu" style="margin-top:10px">One full monthly fee is invoiced at signature or launch. These totals cover cumulative first invoices through November 30. Collections, tax, credits, churn and revenue recognition are outside this model.</p></section>
+<section class="pn review" id="blockers"><h2>What is solved and who acts next?</h2><p class="mu" id="caseCount"></p><div id="blockerCases"></div><p class="sm mu">The checkpoint owner identifies who must act next. Confirm the cause before attributing a delay.</p></section>
+<section class="pn review" id="economics"><h2>What would 100% live in two weeks be worth?</h2><p class="mu">Eight illustrative contracts, measured from kickoff to production. Compare the standard delivery path with a conditional day-10 launch for every late studio. Earlier launches keep their original date.</p>
+<div id="economicsKpis"></div><p id="econCalc"></p><p id="econBilling"></p><div class="econDecision"><b id="econDecision"></b><p id="econBreak"></p></div>
+<div class="f2"><label>Loaded hourly cost (USD)<select id="laborRate"><option>50</option><option selected>75</option><option>100</option></select></label><label>Coordination minutes per excess day<select id="touchMinutes"><option>15</option><option selected>30</option><option>60</option></select></label><label>Added recovery hours per late studio<select id="recoveryHours"><option>0</option><option selected>2</option><option>4</option></select></label></div><p class="sm mu">The standard path uses sample export, mapping, training and processor lead times. Core migration effort is common to both cases. Scenario inputs are assumptions.</p></section>
 <div class="g2" style="margin:14px 0"><div class="pn sm"><b>What the rules add</b><ol style="margin:6px 0 0;padding-left:18px"><li>Gates at 25%, 50% and 70% of the window, plus a Day 2 check</li><li>One owner and one blocker for every migration</li><li>Automatic follow-up when no one has touched an account for 3 business days</li><li>Estimated delay by checkpoint owner; verify the cause with the studio</li><li>A proactive update that names the source platform and its usual export wait</li><li>Three delivery lanes, with a commit date that runs lane work and the payment transfer in parallel and checks it against the two-week target</li><li>A zero-tolerance cutover audit: five record counts must reconcile and five pre-launch checks must pass</li></ol></div>
 <div class="pn sm"><b>Export wait by source (illustrative, business days)</b><div id="gsrc" style="margin-top:6px"></div><p class="mu" style="margin-top:8px">The optional MCP tool learn_source_profile can summarize observed export waits by platform.</p></div></div>
 <div class="g2" style="margin:14px 0">
@@ -260,7 +265,7 @@ const GR=[['Harbor Pilates','Mindbody',2,'A','stripe',.5,-3,12,2,3,null,null,-2]
 let G,gd=0,gs=0,gf=0,gsel=0,gat=null,GL=[];
 const gmk=()=>GR.map(r=>({n:r[0],src:r[1],loc:r[2],lane:route(r[2],r[1],0),pay:r[4],load:r[5],s:r[6],lag:r[7],kd:r[8],sl:r[9],data:r[10],sb:null,sf:null,live:null,t:r[12],rem:null,rg:null}));
 const gcd=m=>qdays(m.lane,m.loc,m.pay,m.load,0).days;
-function gas(m){const c=gcd(m),due=[.25,.5,.7].map(x=>m.s+Math.round(c*x)),act=[m.data,m.sb,m.sf],sl=due.map((d,i)=>act[i]!=null?Math.max(0,act[i]-d):Math.max(0,gd-d)),tot=Math.max(...sl),cu=Math.min(tot,sl[0]+Math.max(0,sl[2]-Math.max(sl[1],sl[0]))),net=Math.max(0,tot-cu),cm=m.s+c,rb=cm+cu,fc=m.live!=null?m.live:Math.max(gd+1,rb+Math.max(0,net-2));
+function gas(m){const c=gcd(m),due=[.25,.5,.7].map(x=>m.s+Math.round(c*x)),act=[m.data,m.sb,m.sf],sl=due.map((d,i)=>act[i]!=null?Math.max(0,act[i]-d):Math.max(0,gd-d)),tot=Math.max(...sl),cu=Math.min(tot,sl[0]+Math.max(0,sl[2]-Math.max(sl[1],sl[0]))),net=Math.max(0,tot-cu),cm=m.s+c,rb=cm+cu,fc=m.live!=null?m.live:Math.max(gd+1,m.s+PD[m.pay],rb+Math.max(0,net-2));
 const gn=['data','sandbox','staff'],og=m.live!=null?null:act[0]==null?'data':act[1]==null?'sandbox':act[2]==null?'staff':'cutover',own=!og?'-':(og=='data'||og=='staff')?'Customer':'Kenko',late=og&&gn.includes(og)&&due[gn.indexOf(og)]<gd,idle=gd-m.t,stale=m.live==null&&idle>=3;
 const st=m.live!=null?(fc<=cm?'Live on time':fc<=rb?'Live, customer-delayed':'Live late (Kenko)'):fc>rb?'Red':(net>0||(own=='Customer'&&late)||stale)?'Amber':'Green';return{c,due,act,cm,fc,og,own,late,idle,stale,st,cu,risk:m.live==null&&fc>m.s+TG}}
 const glog=(w,t)=>{GL.unshift(`<div>Day ${gd} <b style="color:var(--bl)">${w}</b> ${t}</div>`);GL=GL.slice(0,40);$('#glg').innerHTML=GL.join('')};
@@ -269,7 +274,7 @@ function gstep(m){if(m.live!=null)return;if(m.data==null&&(gd>=m.s+m.lag||(m.rg=
 function gnext(){gd++;G.forEach(m=>{gstep(m);if(m.live!=null)return;const a=gas(m),cust=a.own=='Customer';
 if(gat){if(cust&&(a.late||gd>=m.s+2)&&(m.rem==null||m.rg!=a.og||gd-m.rem>=3)){m.rem=gd;m.rg=a.og;m.t=gd;gs++;glog('Claude','Drafted and sent a '+a.og+' reminder to '+m.n+' naming '+m.src)}else if(a.stale){m.t=gd;gf++;glog('CRM','Follow-up task logged for '+m.n)}}
 else if(rng()<.15&&(a.stale||a.late)){m.t=gd;m.rem=gd;m.rg=a.og;gs++;glog('CSM','Manual follow-up sent to '+m.n)}});gv()}
-function gv(){renderFinance();const A=G.map(m=>[m,gas(m)]),fl=A.filter(x=>x[0].live==null),lv=A.filter(x=>x[0].live!=null);
+function gv(){renderBlockers();renderFinance();const A=G.map(m=>[m,gas(m)]),fl=A.filter(x=>x[0].live==null),lv=A.filter(x=>x[0].live!=null);
 $('#gday').textContent='Day '+gd;
 $('#gk').innerHTML=`<div class="pn"><span class="mu sm">In flight</span><b>${fl.length}</b></div><div class="pn"><span class="mu sm">Two-week target at risk</span><b style="color:var(--R)">${fl.filter(x=>x[1].risk).length}</b></div><div class="pn"><span class="mu sm">Blocked on customer</span><b style="color:var(--A)">${fl.filter(x=>x[1].own=='Customer').length}</b></div><div class="pn"><span class="mu sm">No touch for 3+ days</span><b>${fl.filter(x=>x[1].stale).length}</b></div><div class="pn"><span class="mu sm">Live on time, of live</span><b style="color:var(--G)">${lv.filter(x=>x[1].st=='Live on time').length} of ${lv.length}</b></div><div class="pn"><span class="mu sm">Customer reminders, follow-ups</span><b>${gs}, ${gf}</b></div>`;
 const bc={Red:'R',Amber:'A',Green:'G','Live on time':'G','Live, customer-delayed':'A','Live late (Kenko)':'R'},o={Red:0,Amber:1,Green:2};
@@ -277,7 +282,7 @@ A.sort((x,y)=>(x[0].live!=null)-(y[0].live!=null)||o[x[1].st]-o[y[1].st]);
 $('#gtb').innerHTML=A.map(x=>{const m=x[0],a=x[1],i=G.indexOf(m);return `<button class="q" data-g="${i}" aria-pressed="${i==gsel}"><span class="bd b${bc[a.st]}" title="${a.st}">${bc[a.st]}</span><span class="n">${m.n}<small>${m.src}, day ${Math.max(0,gd-m.s)} of ${a.c}, ${m.live!=null?a.st:'blocked on '+(a.og=='cutover'?'cutover':a.og)+' ('+a.own+')'}${a.stale?', no touch '+a.idle+' days':''}</small></span></button>`}).join('');
 document.querySelectorAll('[data-g]').forEach(b=>b.onclick=()=>{gsel=+b.dataset.g;gv()});
 const m=G[gsel],a=gas(m),nm=['data','sandbox','staff'];
-$('#gdt').innerHTML=`<h3>${m.n}</h3><p class="mu sm">${m.src}, ${m.loc} ${m.loc>1?'locations':'location'}, lane ${m.lane}, ${m.pay} payments. Committed day ${a.cm-m.s}, forecast day ${a.fc-m.s}.</p>`+['Data received','Sandbox reviewed','Staff verified'].map((l,i)=>`<div class="sig"><span>${l}</span><span class="mu">due day ${a.due[i]-m.s}</span><b>${a.act[i]!=null?'done day '+(a.act[i]-m.s):(gd>a.due[i]?'late':'waiting')}</b></div>`).join('')+(m.live!=null?'<p><b>Live.</b></p>':`<h3 style="margin-top:12px">Draft proactive update</h3><p class="sm" style="border-left:3px solid var(--bl);padding-left:10px">${gmsg(m,a)}</p>`)}
+$('#gdt').innerHTML=`<h3>${m.n}</h3><p class="mu sm">${m.src}, ${m.loc} ${m.loc>1?'locations':'location'}, lane ${m.lane}, ${m.pay} payments. Committed day ${a.cm-m.s}, forecast day ${a.fc-m.s}.</p>`+['Data received','Sandbox reviewed','Staff verified'].map((l,i)=>`<div class="sig"><span>${l}</span><span class="mu">due day ${a.due[i]-m.s}</span><b>${a.act[i]!=null?'done day '+(a.act[i]-m.s):(gd>a.due[i]?'late':'waiting')}</b></div>`).join('')+(m.live!=null?'<p><b>Live.</b></p>':`<h3 style="margin-top:12px">Draft proactive update</h3><p class="sm" style="border-left:3px solid var(--bl);padding-left:10px">${gmsg(m,a)}</p>`)+blockerPanel(m)}
 function ginit(){rs=7;G=gmk();gd=0;gs=0;gf=0;GL=[];$('#glg').innerHTML='';glog('CRM','Eight migrations loaded');gv()}
 $('#gsrc').innerHTML=Object.entries(GS).map(([k,v])=>`<div class="bar"><span style="width:130px">${k[0].toUpperCase()+k.slice(1)}</span><span class="t" style="width:${v*14}px"></span><b>${v}</b></div>`).join('');
 $('#gnx').onclick=gnext;$('#grs').onclick=ginit;
@@ -328,6 +333,76 @@ $('#gau').onclick=e=>{gat=!gat;e.target.setAttribute('aria-pressed',!!gat);e.tar
  function followups(on){gat=on;$('#gau').setAttribute('aria-pressed',String(on));$('#gau').textContent='Autopilot follow-ups: '+(on?'on':'off');}
  function finishPlaybook(){const a=A[sel],p=PB[pick(a)];p.s.forEach(([src,msg])=>log(src,msg));p.f(a);view();}
  function onboard(n){obDraw(n);if(n===OB.length)$('#obsum').textContent='Simulated specialist time: '+OB.reduce((t,s)=>t+s[3],0)+' minutes. Manual scenario: 180 minutes.';}
+// The file-receipt gate represents a usable export in this synthetic cohort.
+function blockerPanel(m){
+  const a=gas(m), milestones=[
+    [m.data,'Usable export accepted'],[m.sb,'Mapping reconciled in sandbox'],
+    [m.sf,'Front desk verified'],[m.live,'Production launch confirmed']
+  ];
+  const closed=milestones.filter(([day])=>day!=null);
+  const last=closed.length?closed[closed.length-1]:null;
+  const evidence=last?closed.map(([day,label])=>label+' ('+shortDate(dateAt(day))+')').join(' → '):'Kickoff completed · '+shortDate(dateAt(m.s));
+  const gate=a.og;
+  let owner='Implementation lead',work='',proof='',escalation='';
+  if(gate){
+    [owner,work]=gateWork[gate];
+    proof={data:'A usable export passes intake validation.',sandbox:'Source and sandbox totals reconcile.',staff:'The studio completes a front-desk check-in.',cutover:'Pre-launch checks pass and the studio confirms production access.'}[gate];
+    escalation={data:'If the file misses its due date, call the studio admin. If the provider holds the export, obtain its request number and ETA.',sandbox:'If reconciliation is late, the migration lead assigns an engineer and rebooks the review.',staff:'If the session is missed, the coach contacts the studio manager and books the next available slot.',cutover:'If a check fails, hold launch, assign the exception and give Finance a revised invoice date.'}[gate];
+  }
+  const at=gate?invoiceRow(m):null;
+  const side=gate?(a.own==='Customer'?'Studio dependency':'Kenko dependency'):'Resolved';
+  const paymentWait=gate==='cutover' && gd<m.s+PD[m.pay];
+  if(paymentWait){
+    owner='Payments specialist + processor';
+    work='Confirm the transfer ETA and keep the first live transaction on hold until the processor clears it.';
+    proof='Transfer completes and the payment test and launch checks pass.';
+    escalation='If the ETA threatens the commitment, escalate to the processor and revise the invoice forecast with Finance.';
+  }
+  return '<article class="casecard"><div class="casehead"><h3>'+m.n+'</h3><strong>'+side+'</strong></div><dl><dt>Verified in the simulation</dt><dd>'+evidence+'</dd>'+
+    (gate?'<dt>Open work</dt><dd>'+work+'</dd><dt>Accountable follow-up</dt><dd>Kenko onboarding lead · '+owner+' · checkpoint '+shortDate(dateAt(at.due))+'</dd><dt>Escalation</dt><dd>'+escalation+'</dd><dt>Clears when</dt><dd>'+proof+'</dd>':'<dt>Outcome</dt><dd>Live on business day '+(m.live-m.s)+' against the day-10 target.</dd>')+'</dl></article>';
+}
+function renderBlockers(){
+  const selected=G[gsel];
+  const comparison=G.find(m=>m.live==null && gas(m).own!==gas(selected).own);
+  $('#blockerCases').innerHTML=[selected,comparison].filter(Boolean).map(blockerPanel).join('');
+  const live=G.filter(m=>m.live!=null),late=G.filter(m=>m.live==null&&gas(m).late);
+  $('#caseCount').textContent='Simulation day '+gd+' · '+live.length+' of '+G.length+' live · '+late.length+' overdue checkpoints';
+}
+// Day-zero baseline projects the seeded workflow without reminder-driven acceleration.
+function standardLaunch(m){
+  const data=m.data??Math.max(1,m.s+m.lag);
+  const sandbox=Math.max(1,data+m.kd),staff=sandbox+m.sl;
+  return Math.max(staff+2,m.s+PD[m.pay]);
+}
+function unitEconomics(){
+  const rate=Number($('#laborRate').value),touch=Number($('#touchMinutes').value)/60;
+  const recovery=Number($('#recoveryHours').value);
+  const cohort=gmk(),late=[],fixed=[];
+  let excess=0,earlierInvoices=0;
+  for(const m of cohort){
+    const base=standardLaunch(m),target=Math.min(base,m.s+TG);
+    const days=base-target;
+    if(days>0)late.push(m.n);
+    if(PD[m.pay]>TG)fixed.push(m.n);
+    excess+=days;
+    const [fee,trigger]=contractTerms[m.n];
+    if(trigger==='Launch' && dateAt(base)>closeDate && dateAt(target)<=closeDate)earlierInvoices+=fee;
+  }
+  const grossHours=excess*touch,addedHours=late.length*recovery;
+  return {total:cohort.length,late:late.length,fixed,excess,grossHours,addedHours,net:(grossHours-addedHours)*rate,rate,earlierInvoices};
+}
+function renderEconomics(){
+  const s=unitEconomics(),base=s.total-s.late;
+  $('#economicsKpis').innerHTML=[
+   ['Standard path',base+' / '+s.total+' by day 10'],['Target scenario',s.total+' / '+s.total+' by day 10'],
+   ['Extra account-days removed',String(s.excess)],['Net capacity value',money(s.net)]
+  ].map(([l,v])=>'<div><small>'+l+'</small><strong>'+v+'</strong></div>').join('');
+  $('#econCalc').textContent=s.grossHours.toFixed(1)+' coordination hours avoided − '+s.addedHours.toFixed(1)+' recovery hours = '+(s.grossHours-s.addedHours).toFixed(1)+' net hours × '+money(s.rate)+'/hour. Capacity value becomes cash savings only if spend falls.';
+  $('#econBilling').textContent=money(s.earlierInvoices)+' of first invoices would move into November. Signature-triggered invoices keep their dates. Billing timing is reported separately from labor value.';
+  $('#econDecision').textContent='Decision: '+s.fixed.join(', ')+' has a 20-business-day payment transfer. To deliver all eight by day 10, confirm an earlier processor start or an approved alternative before promising the date. Additional vendor fees reduce the modeled benefit dollar for dollar.';
+  $('#econBreak').textContent='Break-even recovery effort: '+(s.late?s.grossHours/s.late:0).toFixed(1)+' hours per late studio, before external costs.';
+}
+
  const scenes=[
  ['cc','#kpi','Which accounts need intervention?',4500,()=>{sel=order()[0];view();}],
  ['cc','#detail','Inspect the highest-priority account and its recovery playbook.',4500,()=>detail(1)],
@@ -337,12 +412,16 @@ $('#gau').onclick=e=>{gat=!gat;e.target.setAttribute('aria-pressed',!!gat);e.tar
  ['ob','#cap','Compare planned intake with available specialist hours.',4500,()=>{$('#n').value=200;cap();}],
  ['gl','#finance','Start with eight contracts. Check which first invoices move across November close.',3500,()=>{gsel=0;ginit();followups(true);}],
  ['gl','#decision','Advance one business day. Review the highest-priority open checkpoint and its invoice impact.',4000,gnext],
+ ['gl','#blockers','Harbor needs a usable export. Compare that studio dependency with work owned by Kenko.',7000,renderBlockers],
  ['gl','#qo','Quote a launch with a legacy payment processor. Check the binding lead time.',5000,()=>{$('#qp').value='legacy';qr();}],
  ['gl','#ao','Hold cutover while record counts and sign-offs are outstanding.',4700,()=>aLoad('gaps')],
  ['gl','#ao','Recheck a corrected sample and verify that all ten checks pass.',4000,()=>aLoad('clean')],
  ['gl','#gday','Advance another business day. Inspect the migration queue and follow-up counters.',3400,gnext],
  ['gl','#gday','Advance one more day. See which checkpoints are still open.',3200,gnext],
  ['gl','#finance','Revisit the first-invoice forecast after the checkpoints update.',5500,renderFinance],
+ ['gl','#blockers','Recheck the evidence after the intervention. A reminder alone cannot clear an export checkpoint.',6500,renderBlockers],
+ ['gl','#blockers','Fast-forward to the outcome: verified launches and the actual elapsed days for the sample accounts.',6000,()=>{for(let n=0;n<50&&G.some(m=>m.live==null);n++)gnext();gsel=2;gv();}],
+ ['gl','#economics','Compare the original delivery path with eight launches by day ten. Separate capacity value from earlier billing.',9500,renderEconomics],
  ['pl','#ledgerPanel','Compare opportunities tagged to requests across all segments.',4500,()=>filterLedger('All')],
  ['pl','#ledgerPanel','Inspect multi-location demand and billing exceptions for chains.',4200,()=>filterLedger('Chains')],
  ['pl','#ledgerPanel','Inspect membership and access-control demand from gyms.',4000,()=>filterLedger('Gyms')],
@@ -404,7 +483,9 @@ $('#gau').onclick=e=>{gat=!gat;e.target.setAttribute('aria-pressed',!!gat);e.tar
  },true);
  tourControls();
 
-A=mk();log('CRM','Sample portfolio loaded: 12 accounts');view();obDraw(0);cap();led();ginit();qinit();
+for(const id of ['laborRate','touchMinutes','recoveryHours'])$('#'+id).onchange=renderEconomics;
+renderEconomics();
+startTour();
 </script>
 </body>
 </html>
