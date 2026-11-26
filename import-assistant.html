@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Kenko Import Assistant | Emulator</title>
+<style>
+:root{--bg:#f1f4f5;--pn:#fff;--ink:#11202a;--mu:#586a76;--ln:#d6dee3;--bl:#0f6e8c;--g:#2b9348;--r:#c92a2a;--a:#d99a00;--c1:#e8590c;--k1:#0f6e8c;--k2:#8cc3d6;color-scheme:light}
+@media(prefers-color-scheme:dark){:root{--bg:#0d1920;--pn:#15252e;--ink:#e8eff3;--mu:#9db0bc;--ln:#294049;--bl:#4cb5d6;--g:#4cc26b;--r:#ff6b6b;--a:#f2b824;--c1:#ff7a33;--k1:#4cb5d6;--k2:#2f7f96;color-scheme:dark}}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.5 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+main{max-width:1040px;margin:0 auto;padding:max(24px,env(safe-area-inset-top)) 18px 56px}
+h1,h2,h3{font-family:"Bricolage Grotesque","Segoe UI",system-ui,sans-serif;line-height:1.15;margin:0}h1{font-size:clamp(1.8rem,5vw,2.6rem);letter-spacing:-.02em;margin:6px 0 8px}h2{font-size:1.15rem;margin-bottom:6px}
+p{margin:0 0 8px}.mu{color:var(--mu)}.sm{font-size:.86rem}.eye{font-weight:700;letter-spacing:.08em;text-transform:uppercase;font-size:.75rem;color:var(--bl)}
+.pn{background:var(--pn);border:1px solid var(--ln);border-radius:10px;padding:16px;margin:16px 0}
+button{font:600 .9rem system-ui,sans-serif;color:var(--ink);background:var(--pn);border:1px solid var(--ln);border-radius:8px;padding:8px 14px;cursor:pointer;margin:0 6px 6px 0}button.pri{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.wide{overflow-x:auto}table{width:100%;border-collapse:collapse;font-size:.82rem;white-space:nowrap}th,td{text-align:left;padding:5px 8px;border-top:1px solid var(--ln)}
+td.auto{background:#0f6e8c26}td.warn{background:#d99a0033}td.block{background:#c92a2a33;font-weight:700}
+.dec{display:inline-block;padding:2px 12px;border-radius:6px;color:#fff;font:700 1rem system-ui}.dec.go{background:var(--g)}.dec.no{background:var(--r)}
+.g{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:12px}.c{background:var(--bg);border-left:3px solid var(--bl);padding:12px;border-radius:0 8px 8px 0}.c ul{margin:6px 0 0;padding-left:18px;font-size:.86rem}
+.msg{border-left:3px solid var(--bl);padding-left:12px;font-size:.9rem}.trk{display:flex;height:22px;border-radius:3px;overflow:hidden;margin:10px 0}.trk i{display:block;height:100%}
+.lg{display:flex;flex-wrap:wrap;gap:6px 16px;font-size:.8rem;color:var(--mu)}.lg span::before{content:"";display:inline-block;width:10px;height:10px;border-radius:2px;margin-right:6px;background:var(--c)}
+footer{margin-top:28px;border-top:1px solid var(--ln);padding-top:12px;font-size:.82rem;color:var(--mu)}
+</style></head><body><main>
+<span class="eye">Import assistant · illustrative · synthetic data</span>
+<h1>From a messy export to a migration-ready file</h1>
+<p class="mu" style="max-width:70ch">Reads the first file a studio sends from a Mindbody-style export, fixes what is safe to fix, and tells the studio exactly what still blocks the load. Column names and the target format are illustrative; swap in Kenko’s real import spec.</p>
+<div><button class="pri" id="go">Validate and normalize</button><button id="fix">Studio sends corrections</button><button id="rs">Reset</button><a href="index.html" class="sm" style="font-weight:600;color:var(--bl)">Back to the emulator</a></div>
+<section class="pn"><h2>1. The file as received</h2><p class="sm mu">Shading appears after validation: blue is fixed automatically, amber is worth asking about, red blocks the load.</p><div class="wide"><table id="raw"></table></div></section>
+<div id="out" hidden>
+<section class="pn"><h2>2. The verdict</h2><p id="vd"></p><div class="g" id="iss"></div></section>
+<section class="pn"><h2>3. What goes back to the studio</h2><p class="msg" id="msg"></p></section>
+<section class="pn"><h2 id="h4">4. The migration-ready file</h2><div class="wide"><table id="nm"></table></div><p id="au" class="sm" style="margin-top:10px"></p></section>
+</div>
+<section class="pn"><h2>What this can and cannot move</h2>
+<p class="sm mu">Shares of elapsed time on the late studios in the executive readout’s sample.</p>
+<div class="trk"><i style="width:74%;background:var(--c1)"></i><i style="width:16%;background:var(--k1)"></i><i style="width:10%;background:var(--k2)"></i></div>
+<div class="lg"><span style="--c:var(--c1)">Studio-side steps 74%</span><span style="--c:var(--k1)">Kenko sandbox mapping 16%</span><span style="--c:var(--k2)">Cutover buffer 10%</span></div>
+<div class="g" style="margin-top:14px"><div class="c"><b>Targets</b><ul><li>First file to usable file: about 1 to 2 days of corrections today, per our discussion</li><li>Kenko-side mapping and specialist admin time</li></ul></div>
+<div class="c"><b>Does not move</b><ul><li>The studio sending the provider request</li><li>Provider turnaround on a slow platform</li><li>Finding a blocked studio in week three instead of day two</li></ul></div>
+<div class="c"><b>Why it still matters</b><ul><li>Hours freed for the blockers only people can clear</li><li>Same-day exact corrections instead of a back-and-forth</li><li>Counts feed the cutover audit directly</li></ul></div></div>
+<p class="sm mu" style="margin-top:12px">Assumed: a manual correction loop of 1 to 2 days versus same-day with the assistant. Size the lever after reconstructing five late and five on-time studios.</p></section>
+<footer>Synthetic rows. Not Mindbody’s real column names; confirm against a real export and Kenko’s import spec before relying on any rule here. Prepared by Madhu Poonacha.</footer>
+</main>
+<script>
+const E=s=>document.querySelector(s),H=['ID','First','Last','Email','Phone','Status','Plan','Plan end','Pack','Card','Bookings'],NH=['ID','Name','Email','Phone','Status','Plan','Plan end','Pack','Card token','Bookings'];
+const R0=[['1001','Ana','Ruiz','ana@x.com','(415) 555-0101','Active','Unlimited Monthly','2027-01-31',0,'Visa 4242',3],['1002','Ben','Cole','ben@x.com','415.555.0102','Active','Unlimited Monthly','2027-02-28',0,'',2],['1003','Cy','Mills','','4155550103','Active','10-Class Pack','2026-12-31',6,'Visa 1881',1],['1004','Dee','Park','ana@x.com','+1 415 555 0104','Active','Unlimited Monthly','2027-01-31',0,'MC 4444',0],['1005','Eli','Stone','eli@x.com','415-555-0105','Suspended','Unlimited Monthly','',0,'Visa 0005',0],['1006','Fay','Ng','fay@x.com','415555010','Active','5-Class Pack','2026-12-15',2,'Visa 0006',1],['1007','Gus','Hill','gus@x.com','415-555-0107','Inactive','','',0,'',0],['1008','Hana','Ito','hana@x.com','(415) 555 0108','Active','Intro Offer','12/20/2026',1,'Amex 0008',2]];
+let raw,res;
+function reset(){raw=R0.map(r=>r.slice());res=null;draw()}
+function run(){const I=[],N=[],seen={};let ex=0;
+raw.forEach((r,i)=>{const[id,fn,ln,em,ph,st,pl,end,pk,cd,bk]=r,add=(c,m,col)=>I.push({i,id,c,m,col});
+if(st==='Inactive'&&!pl){ex++;add('auto','Archived member with no plan, excluded',5);return}
+let d=ph.replace(/\D/g,'');if(d.length==11&&d[0]=='1')d=d.slice(1);let phone='';
+if(d.length==10){phone='+1'+d;if(ph!==phone)add('auto','Phone normalized to +1 format',4)}else add('warn','Phone has '+d.length+' digits',4);
+let e=end;const m=/^(\d\d)\/(\d\d)\/(\d{4})$/.exec(end);if(m){e=m[3]+'-'+m[1]+'-'+m[2];add('auto','Date converted to ISO',7)}
+if(!em)add('warn','No email on file',3);else if(seen[em])add('block','Same email as member '+seen[em]+': merge or correct?',3);else seen[em]=id;
+if(pl&&st==='Active'&&!cd)add('block','No card on file, so the member would re-swipe at the front desk',9);
+N.push([id,fn+' '+ln,em||'—',phone||'—',{Active:'active',Suspended:'paused'}[st]||'archived',pl||'—',e||'—',pk,cd?'tok_'+cd.slice(-4):'—',bk])});
+res={I,N,ex};draw()}
+function draw(){const hl={},sv={auto:1,warn:2,block:3};
+if(res)res.I.forEach(x=>{const k=x.i+','+x.col;if(!hl[k]||sv[x.c]>sv[hl[k]])hl[k]=x.c});
+E('#raw').innerHTML='<tr>'+H.map(h=>`<th>${h}</th>`).join('')+'</tr>'+raw.map((r,i)=>'<tr>'+r.map((v,j)=>`<td class="${hl[i+','+j]||''}">${v===''?'—':v}</td>`).join('')+'</tr>').join('');
+E('#out').hidden=!res;if(!res)return;
+const by=c=>res.I.filter(x=>x.c===c),bl=by('block'),wn=by('warn'),au=by('auto'),ok=!bl.length;E('#h4').textContent=ok?'4. The migration-ready file':'4. Draft migration file (held until the blockers clear)';
+E('#vd').innerHTML=`<span class="dec ${ok?'go':'no'}">${ok?'Usable file':'Not usable yet'}</span> <span class="sm">${raw.length} rows read · ${res.ex} excluded · ${au.length-res.ex} auto-fixes · ${wn.length} warnings · ${bl.length} blockers</span>`;
+const box=(t,a)=>`<div class="c"><b>${t}</b><ul>${a.length?a.map(x=>`<li>Member ${x.id}: ${x.m}</li>`).join(''):'<li>None</li>'}</ul></div>`;
+E('#iss').innerHTML=box('Fixed automatically',au)+box('Blocks the load',bl)+box('Worth asking, does not block',wn);
+E('#msg').textContent=ok?'Thanks, your file is ready to load. I will email you by noon your time tomorrow with the load window.':`Hi team, thanks for sending the export. It is close. ${bl.length} thing${bl.length>1?'s':''} stop${bl.length>1?'':'s'} us loading it: ${bl.map(x=>'member '+x.id+' ('+x.m.toLowerCase()+')').join('; ')}. Reply with the corrected rows or tell us how you would like them handled, and we will load it the same day.`;
+E('#nm').innerHTML='<tr>'+NH.map(h=>`<th>${h}</th>`).join('')+'</tr>'+res.N.map(r=>'<tr>'+r.map(v=>`<td>${v}</td>`).join('')+'</tr>').join('');
+const pm=raw.filter(r=>r[9]).length,mp=res.N.filter(r=>r[8]!=='—').length;
+E('#au').innerHTML=ok?`<b>Cutover audit inputs:</b> members ${raw.length} source − ${res.ex} excluded = ${raw.length-res.ex}, migrated ${res.N.length}, gap ${res.N.length-(raw.length-res.ex)}. Payment methods ${pm} in source, ${mp} tokenized.`:'Cutover audit inputs appear once the blockers are cleared.'}
+E('#go').onclick=run;E('#fix').onclick=()=>{raw[1][9]='Visa 7777';raw[3][3]='dee@x.com';run()};E('#rs').onclick=reset;reset();
+</script></body></html>

@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Kenko Onboarding | Executive Readout</title>
+<style>
+:root{--bg:#f1f4f5;--pn:#fff;--ink:#11202a;--mu:#586a76;--ln:#d6dee3;--bl:#0f6e8c;--c1:#e8590c;--c2:#f2a65a;--k1:#0f6e8c;--k2:#8cc3d6;--pw:#9aa7b0;--g:#2b9348;--r:#c92a2a;color-scheme:light}
+@media(prefers-color-scheme:dark){:root{--bg:#0d1920;--pn:#15252e;--ink:#e8eff3;--mu:#9db0bc;--ln:#294049;--bl:#4cb5d6;--k1:#4cb5d6;--k2:#2f7f96;--c1:#ff7a33;--c2:#b3743a;--g:#4cc26b;--r:#ff6b6b;color-scheme:dark}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.5 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+main{max-width:1040px;margin:0 auto;padding:max(24px,env(safe-area-inset-top)) 18px 56px}
+h1,h2,h3{font-family:"Bricolage Grotesque","Segoe UI",system-ui,sans-serif;line-height:1.15;margin:0}
+h1{font-size:clamp(1.8rem,5vw,2.7rem);letter-spacing:-.02em;margin:6px 0 8px}h2{font-size:1.2rem;margin-bottom:4px}h3{font-size:1rem}
+p{margin:0 0 8px}.mu{color:var(--mu)}.sm{font-size:.86rem}.eye{font-weight:700;letter-spacing:.08em;text-transform:uppercase;font-size:.75rem;color:var(--bl)}
+.pn{background:var(--pn);border:1px solid var(--ln);border-radius:10px;padding:16px;margin:16px 0}
+.top{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;align-items:flex-start}
+button{font:600 .9rem system-ui,sans-serif;color:var(--bg);background:var(--ink);border:0;border-radius:8px;padding:8px 14px;cursor:pointer}
+.ans{border-left:4px solid var(--bl)}
+.k{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:12px}.k .pn{margin:0;display:flex;flex-direction:column;gap:2px}
+.k b{font:700 1.8rem "Bricolage Grotesque",system-ui,sans-serif;line-height:1.2}
+.row{display:grid;grid-template-columns:124px 1fr 60px;gap:10px;align-items:center;margin:7px 0;font-size:.85rem}.row.w{grid-template-columns:230px 1fr 70px}
+.trk{position:relative;display:flex;height:18px;background:var(--bg);border-radius:3px}.trk i{display:block;height:100%}
+.tl{position:absolute;top:-4px;bottom:-4px;width:2px;background:var(--r)}
+.bad{color:var(--r)}.ok{color:var(--g)}
+.lg{display:flex;flex-wrap:wrap;gap:6px 16px;font-size:.8rem;color:var(--mu);margin:10px 0 0}.lg span::before{content:"";display:inline-block;width:10px;height:10px;border-radius:2px;margin-right:6px;background:var(--c)}
+.g{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:12px}
+.c{background:var(--bg);border-left:3px solid var(--bl);padding:12px;border-radius:0 8px 8px 0}.c p{margin:4px 0 0}
+table{width:100%;border-collapse:collapse;font-size:.86rem}th,td{text-align:left;padding:7px 8px;border-top:1px solid var(--ln);vertical-align:top}
+footer{margin-top:28px;border-top:1px solid var(--ln);padding-top:12px;font-size:.82rem;color:var(--mu)}
+@media(max-width:620px){.row,.row.w{grid-template-columns:1fr 54px}.row>span{grid-column:1/-1}}
+@media print{body{background:#fff;color:#000}.np{display:none}.pn{break-inside:avoid;border-color:#999}}
+</style></head><body><main>
+<div class="top"><div><span class="eye">Executive readout · illustrative · 8 sample studios</span>
+<h1>Why more than half of studios miss the two-week go-live, and what it costs</h1>
+<p class="mu" style="max-width:68ch">One page for Finance, Operations and Sales. Day zero is the handoff call. What we established in discussion is kept separate from the synthetic model, so every modelled number traces to a studio.</p></div>
+<button class="np" onclick="print()">Save as PDF</button></div>
+
+<section class="pn ans" id="ans"></section>
+<section class="pn"><h2>What we established in the discussion</h2><div class="g">
+<div class="c"><p class="sm"><b>40 to 50%</b> of studios go live within two weeks. The rest take four to six.</p></div>
+<div class="c"><p class="sm"><b>Every late studio had a data issue.</b> About a third also missed a training call.</p></div>
+<div class="c"><p class="sm"><b>Two data patterns:</b> the first file arrives in week three or four, or arrives in week one but is not usable until week four.</p></div>
+<div class="c"><p class="sm"><b>Platform A</b> is mostly on time, <b>B</b> is mixed, <b>C</b> is always late. Follow-up frequency did not separate outcomes.</p></div>
+<div class="c"><p class="sm"><b>First follow-up lands in week three or four.</b> One forwarded thread suggests the studio only passed the request to its provider that late.</p></div>
+<div class="c"><p class="sm"><b>Still open:</b> why C exports run long, and how the days split between request, first file and usable file.</p></div></div></section>
+<div class="k" id="k"></div>
+
+<section class="pn"><h2>Where the days went</h2>
+<p class="mu sm">Business days from kickoff to go-live on the standard path. The red line is day 10.</p>
+<div id="st"></div>
+<div class="lg"><span style="--c:var(--c1)">Studio: export wait</span><span style="--c:var(--c2)">Studio: staff session</span><span style="--c:var(--k1)">Kenko: sandbox mapping</span><span style="--c:var(--k2)">Kenko: cutover buffer</span><span style="--c:var(--pw)">Processor wait</span></div></section>
+
+<section class="pn"><h2>Who held the clock on the late studios?</h2>
+<div class="trk" id="sh" style="height:26px;margin:10px 0"></div><div class="lg" id="shl"></div><p id="ins" style="margin-top:12px"></p></section>
+
+<section class="pn"><h2>What it means for the month-end close</h2>
+<p class="mu sm">Cumulative first invoices through the close. Collections and revenue recognition are outside this model.</p>
+<div id="br"></div><p id="bill" style="margin-top:12px"></p><p id="scale" class="mu sm"></p></section>
+
+<section class="pn"><h2>Decisions this readout puts on the table</h2><div class="g">
+<div class="c"><h3>1. Make “export request sent” a handoff-call milestone</h3><p class="sm mu">Owner: onboarding lead</p><p class="sm">The request is already made on the call and emailed. The gap is the studio sending it. Ask for the acknowledgment or request number, and for platform C start the provider request at signature.</p></div>
+<div class="c"><h3>2. Agree the first-file date, then work back from day 14</h3><p class="sm mu">Owner: onboarding lead</p><p class="sm">Reserve about four working days after a usable file for corrections, migration and testing. The first-file date is the one that protects go-live.</p></div>
+<div class="c"><h3>3. Follow up on day 2 to 3, and phone if the file is missing</h3><p class="sm mu">Owner: onboarding lead</p><p class="sm">Today the first follow-up lands after the target has passed. Validate the first file the day it arrives and return exact corrections.</p></div>
+<div class="c"><h3>4. Confirm when the first invoice triggers</h3><p class="sm mu">Owner: Finance</p><p class="sm">In the sample, <b id="lv"></b> of first-invoice value bills at go-live. If Kenko bills differently, the cash effect changes, so confirm before sizing it.</p></div>
+<div class="c"><h3>5. Run one weekly readout</h3><p class="sm mu">Owner: head of Customer Experience</p><p class="sm">Same page every week: what is resolved, what is blocked, who acts next, and when leadership steps in.</p></div></div></section>
+
+<section class="pn"><h2>Where an import assistant fits</h2><p class="sm">A tool that normalizes a studio’s first export and returns exact corrections the same day targets the first-file-to-usable-file interval and Kenko-side mapping time. It does not move the studio sending the provider request or the week-three follow-up, so it supports the decisions above rather than replacing them. <a href="import-assistant.html" style="color:var(--bl);font-weight:600">See the working example</a>.</p></section>
+<section class="pn"><h2>Leading indicators to track</h2><table>
+<tr><th>Indicator</th><th>What it tells you</th><th>Proposed target</th></tr>
+<tr><td>Export request sent by the end of the handoff call, with acknowledgment</td><td>Whether the biggest dependency has actually started</td><td>100% of studios</td></tr>
+<tr><td>First follow-up day</td><td>Whether we find a blocked studio before the target passes</td><td>Day 2 to 3, not week 3 to 4</td></tr>
+<tr><td>Three intervals by platform: kickoff to request sent, request sent to first file, first file to usable file</td><td>Which step actually costs the days</td><td>Set after baseline</td></tr>
+<tr><td>Studios with one owner and one blocker</td><td>Whether anyone is accountable for the next step</td><td>100%</td></tr>
+<tr><td>Accounts with no touch in 3+ business days</td><td>Silent drift before it becomes a miss</td><td>0</td></tr>
+<tr><td>Go-live within 10 days, by platform</td><td>Whether the fix worked for the next cohort</td><td>Set after baseline</td></tr></table><p class="sm mu" style="margin-top:10px">The emulator’s Go-live tab shows the three intervals with illustrative numbers. <a href="index.html" style="color:var(--bl);font-weight:600">Open the emulator</a>.</p></section>
+
+<section class="pn"><h2>How I would run the first 90 days</h2><div class="g">
+<div class="c"><h3>Days 1 to 30</h3><p class="sm">Reconstruct five late and five on-time studios from the handoff email, file uploads and migration records, matched by platform. Then record request, first-file and usable-file dates for every migration in flight.</p></div>
+<div class="c"><h3>Days 31 to 60</h3><p class="sm">Pilot the request milestone, the first-file date and day 2 to 3 follow-up on one cohort, starting with platform C. Compare against the baseline.</p></div>
+<div class="c"><h3>Days 61 to 90</h3><p class="sm">Weekly readout live, onboarding leads own root-cause reviews, first cohort result shared with Finance and Sales.</p></div></div></section>
+
+<footer>Prepared by Madhu Poonacha. Synthetic data for eight sample studios; I have not seen Kenko’s data. Assumptions: $75 loaded hourly cost, 30 minutes of coordination per excess day, 2 hours of added recovery per late studio, and a month-end close 6 business days after the model’s day 0. Payment-method transfer lead times were not part of our discussion; they appear only as a modelled constraint.</footer>
+</main>
+<script>
+const PD={stripe:5,modern:10,legacy:20},T=10,CLOSE=6,RATE=75,MIN=.5,REC=2,MX=28;
+const S=[['Harbor Pilates','L',850,-3,12,2,3,'stripe'],['Lumen Yoga','L',575,-5,3,2,2,'modern'],['Atlas Training','L',2400,-8,16,4,5,'legacy'],['Bloom Barre','S',395,-2,4,2,2,'stripe'],['Cadence Dance','L',1200,-5,3,3,4,'modern'],['Nova Lagree','L',975,-7,15,4,3,'stripe'],['Orbit Cycle','S',650,-2,3,3,2,'modern'],['Pine Pole Studio','L',325,-1,3,2,2,'stripe']];
+const R=S.map(([n,t,fee,s,lag,kd,sl,p])=>{const w=lag+kd+sl+2,e=Math.max(w,PD[p]);return{n,t,fee,s,lag,kd,sl,e,pw:e-w,late:Math.max(0,e-T)}});
+const L=R.filter(r=>r.late),OK=R.filter(r=>!r.late),ex=R.reduce((a,r)=>a+r.late,0),net=ex*MIN-L.length*REC;
+const $=n=>'$'+n.toLocaleString('en-US'),E=s=>document.querySelector(s),sum=f=>L.reduce((a,r)=>a+f(r),0);
+const thru=f=>R.reduce((a,r)=>a+(r.t==='S'||r.s+f(r)<=CLOSE?r.fee:0),0),a=thru(r=>r.e),b=thru(r=>Math.min(r.e,T));
+const tot=sum(r=>r.e),pc=v=>Math.round(v/tot*100),cust=pc(sum(r=>r.lag+r.sl)),long=L.filter(r=>r.lag>=10).length;
+const seg=(w,c)=>w?`<i style="width:${w/MX*100}%;background:var(${c})" title="${w} days"></i>`:'';
+E('#ans').innerHTML=`<p class="eye">The answer in 30 seconds</p><p><b>What we heard.</b> Only 40 to 50% of studios go live in two weeks. Every late studio had a data issue, and the first follow-up lands in week three or four.</p><p><b>What the model shows.</b> In this sample, ${L.length} of ${R.length} studios miss day 10, ${long} of those ${L.length} waited 10+ business days for an export, and studio-side steps hold ${cust}% of their elapsed time.</p><p><b>Cost.</b> Launching every late studio by day 10 would release ${net} net staff hours and move ${$(b-a)} of first invoices inside the month-end close.</p><p><b>Ask.</b> Make the export request a handoff-call milestone, follow up in days instead of weeks, and review one readout weekly.</p>`;
+E('#k').innerHTML=[['Live within 10 days',`${OK.length} of ${R.length} → ${R.length}`,'Standard path versus every late studio launched by day 10'],['Earlier go-live per studio',(ex/R.length).toFixed(1)+' days','Average business days pulled forward'],['First invoices by close',$(a)+' → '+$(b),'+'+$(b-a)+' inside the close'],['Net capacity released',net+' hours','About '+$(net*RATE)+' after recovery effort']].map(([l,v,s])=>`<div class="pn"><span class="mu sm">${l}</span><b>${v}</b><span class="mu sm">${s}</span></div>`).join('');
+E('#st').innerHTML=R.slice().sort((x,y)=>y.e-x.e).map(r=>`<div class="row"><span>${r.n}</span><div class="trk">${seg(r.lag,'--c1')}${seg(r.kd,'--k1')}${seg(r.sl,'--c2')}${seg(2,'--k2')}${seg(r.pw,'--pw')}<em class="tl" style="left:${T/MX*100}%"></em></div><b class="${r.late?'bad':'ok'}">${r.late?'+'+r.late+' d':'on time'}</b></div>`).join('');
+const parts=[['Studio: export wait',sum(r=>r.lag),'--c1'],['Studio: staff session',sum(r=>r.sl),'--c2'],['Kenko: sandbox mapping',sum(r=>r.kd),'--k1'],['Kenko: cutover buffer',2*L.length,'--k2']];
+E('#sh').innerHTML=parts.map(p=>`<i style="width:${p[1]/tot*100}%;background:var(${p[2]})"></i>`).join('');
+E('#shl').innerHTML=parts.map(p=>`<span style="--c:var(${p[2]})">${p[0]} ${pc(p[1])}%</span>`).join('');
+const exc=L.find(r=>r.lag<=3),mx=Math.max(...OK.map(r=>r.lag));
+E('#ins').innerHTML=`${long} of ${L.length} late studios waited 10+ business days for an export. The ${OK.length} on-time studios waited ${mx} at most.`+(exc?` ${exc.n} is the exception on export wait: its file needed only about two days of corrections, so its ${exc.late} late days sit in mapping and training.`:'');
+E('#br').innerHTML=[['Standard path',a,'--pw'],['Every late studio launched by day 10',b,'--g']].map(([l,v,c])=>`<div class="row w"><span>${l}</span><div class="trk"><i style="width:${v/b*100}%;background:var(${c})"></i></div><b>${$(v)}</b></div>`).join('');
+const lv=Math.round(R.filter(r=>r.t==='L').reduce((x,r)=>x+r.fee,0)/R.reduce((x,r)=>x+r.fee,0)*100);
+E('#lv').textContent=lv+'%';E('#bill').textContent=`${lv}% of first-invoice value in the sample bills at go-live, so launch speed is cash timing for most of the book. Signature-billed studios keep their dates.`;
+E('#scale').textContent=`At the same mix, every 100 studios is roughly ${Math.round(net/R.length*100)} net hours and ${Math.round(ex/R.length*100)} business days of earlier go-live. This is a linear extrapolation from eight studios, so treat it as directional.`;
+</script></body></html>
