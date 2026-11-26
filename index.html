@@ -63,6 +63,7 @@ footer{margin-top:36px;border-top:1px solid var(--ln);padding-top:14px;font-size
 #segmentHeading{margin-bottom:12px}#tourStep{font-size:.85rem}.tourbar{scroll-margin:0}
 @media(prefers-reduced-motion:no-preference){#led .bar .t{transform-origin:left;animation:ledgerReveal .5s ease-out}@keyframes ledgerReveal{from{transform:scaleX(0)}to{transform:scaleX(1)}}}
 .review{margin:16px 0}.casehead{display:flex;align-items:baseline;justify-content:space-between;gap:8px;flex-wrap:wrap}.casehead strong{color:var(--bl);font-size:.85rem}#blockerCases{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(280px,100%),1fr));gap:16px}.casecard,.econDecision{background:var(--bg);padding:14px;border-left:3px solid var(--bl);margin:8px 0}.casecard dt{font-weight:700;font-size:.83rem;margin-top:6px}.casecard dd{margin:0;font-size:.9rem}.casecard dl{margin:6px 0}#economicsKpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(180px,100%),1fr));gap:10px;margin:12px 0}#economicsKpis div{background:var(--bg);padding:10px}#economicsKpis strong{display:block;font:700 1.35rem var(--hf)}
+.evr{display:grid;grid-template-columns:260px 1fr 52px;gap:10px;align-items:center;margin:8px 0;font-size:.88rem}.evr small{display:block;font-size:.78rem}.evr .tk{display:flex;height:16px;background:var(--ln);border-radius:3px;overflow:hidden}.evr .tk i{display:block;height:100%}.evr b{text-align:right}.evl{display:flex;flex-wrap:wrap;gap:6px 16px;font-size:.8rem;color:var(--mu);margin:10px 0}.evl span::before{content:"";display:inline-block;width:10px;height:10px;border-radius:2px;margin-right:6px;background:var(--c)}@media(max-width:700px){.evr{grid-template-columns:minmax(0,1fr) 46px}.evr>span:first-child{grid-column:1/-1}}
 </style>
 </head>
 <body>
@@ -72,7 +73,7 @@ footer{margin-top:36px;border-top:1px solid var(--ln);padding-top:14px;font-size
 <p class="mu" style="margin-top:10px">Follow a studio from portfolio review through migration, first billing and product investment. All accounts and financial terms are illustrative.</p>
 <nav aria-label="Views"><button data-tab="cc" aria-pressed="true">Command center</button><button data-tab="ob" aria-pressed="false">Onboarding accelerator</button><button data-tab="gl" aria-pressed="false">Go-live assurance</button><button data-tab="pl" aria-pressed="false">Product demand ledger</button></nav>
 </header>
-<div class="tourbar" role="region" aria-label="Guided walkthrough"><button id="auto" class="pri">Run full demo</button><button id="exitTour" hidden>Exit tour</button><b id="tourStep">Four views</b><p id="tourCopy" aria-live="polite">The walkthrough plays automatically. Pause to inspect any account.</p></div>
+<div class="tourbar" role="region" aria-label="Guided walkthrough"><button id="auto" class="pri">Run full demo</button><button id="exitTour" hidden>Exit tour</button><a href="readout.html" style="font-weight:600;color:var(--bl)">Executive readout</a><a href="import-assistant.html" style="font-weight:600;color:var(--bl)">Import assistant</a><b id="tourStep">Four views</b><p id="tourCopy" aria-live="polite">The walkthrough plays automatically. Pause to inspect any account.</p></div>
 
 <section id="cc" class="tab on">
 <div class="kpi" id="kpi"></div>
@@ -103,6 +104,7 @@ footer{margin-top:36px;border-top:1px solid var(--ln);padding-top:14px;font-size
 <section class="pn" id="finance"><h2>First-invoice forecast</h2><p id="asof" class="mu"></p><div id="bridge"></div><div id="decision"></div>
 <div class="wide"><table class="tb"><caption style="text-align:left">Eight sample contracts · first invoice only</caption><thead><tr><th>Studio</th><th>Billing starts</th><th>First invoice</th><th>Launch: committed → forecast / actual</th><th>Next gate</th><th>Close impact</th></tr></thead><tbody id="exposure"></tbody></table></div>
 <p class="sm mu" style="margin-top:10px">One full monthly fee is invoiced at signature or launch. These totals cover cumulative first invoices through November 30. Collections, tax, credits, churn and revenue recognition are outside this model.</p></section>
+<section class="pn review" id="evidence"><h2>Where do the days go? Three intervals per studio</h2><p class="mu">Business days from kickoff to a usable file, split the way we discussed: kickoff to request sent, request sent to first file, first file to usable file. <b>This split is illustrative.</b> Measuring the real one is the first job of the five-late, five-on-time reconstruction.</p><div id="evRows"></div><div class="evl"><span style="--c:var(--F)">Kickoff to request sent</span><span style="--c:var(--A)">Request sent to first file</span><span style="--c:var(--bl)">First file to usable file</span></div><p id="evRead"></p><p class="sm mu" id="evTest"></p></section>
 <section class="pn review" id="blockers"><h2>What is solved and who acts next?</h2><p class="mu" id="caseCount"></p><div id="blockerCases"></div><p class="sm mu">The checkpoint owner identifies who must act next. Confirm the cause before attributing a delay.</p></section>
 <section class="pn review" id="economics"><h2>What would 100% live in two weeks be worth?</h2><p class="mu">Eight illustrative contracts, measured from kickoff to production. Compare the standard delivery path with a conditional day-10 launch for every late studio. Earlier launches keep their original date.</p>
 <div id="economicsKpis"></div><p id="econCalc"></p><p id="econBilling"></p><div class="econDecision"><b id="econDecision"></b><p id="econBreak"></p></div>
@@ -218,7 +220,7 @@ const ld=+$('#qtl').value/100,cl=$('#qq').value!='clean',pay=$('#qp').value,ln=r
 s=pd($('#qd').value||iso(new Date())),c=wdy(s,r.days),g=[.25,.5,.7].map(x=>wdy(s,Math.round(r.days*x))),bind=r.lw>=r.pw?'lane work':'payment transfer',ok=r.days<=TG,mx=Math.max(TG*2,r.lw,r.pw);
 const lv=ok?[]:[...(bind=='payment transfer'?['Start the payment transfer on Day 0 and escalate the processor request']:[]),...(ln!='A'?['Phase the launch: members, schedule and payments first, history after']:[]),...(r.cap?['Add specialist capacity or rebalance load']:[]),...(cl?['Start data cleanup in parallel with the export']:[]),'Pre-book kickoff and cutover slots and run mapping in parallel'];
 $('#qlv').textContent=Math.round(ld*100)+'%';
-$('#qo').innerHTML=`<p style="margin-top:12px"><b>Lane ${ln}.</b> <span class="mu sm">${LW[ln]}</span></p>
+$('#qo').innerHTML=`<p style="margin-top:12px"><b>Lane ${'ABC'.indexOf(ln)+1}.</b> <span class="mu sm">${LW[ln]}</span></p>
 <div class="bar"><span>Lane work: ${r.lw} days</span><span class="t" style="width:${r.lw/mx*100}%"></span></div>
 <div class="bar"><span>Payment transfer: ${r.pw} days, in parallel</span><span class="t" style="width:${r.pw/mx*100}%;background:var(--A)"></span></div>
 <p class="sm mu">The longer path sets the date (${bind}), plus ${r.cap} days of capacity buffer${cl?' and 3 days of data cleanup':''}.</p>
@@ -261,7 +263,7 @@ ENT.forEach((name,i)=>{
 const fl=CHK.filter((c,i)=>!document.querySelector(`#ac [data-t="${i}"]`).checked),no=bad.length||fl.length;
 $('#ao').innerHTML=`<span class="dec ${no?'no':'go'}">${no?'No-go':'Go'}</span> <span class="sm">10 checks run: 5 record counts and 5 pre-launch tests</span>${bad.length?`<p class="sm" style="margin-top:8px"><b>Count mismatches</b><br>${bad.join('<br>')}</p>`:''}${fl.length?`<p class="sm"><b>Failed checks</b><br>${fl.join('<br>')}</p>`:''}`}
 function qinit(){$('#qd').value=iso(wdy(pd(iso(new Date())),1));['#qd','#ql','#qs','#qp','#qq','#qi','#qtl'].forEach(k=>$(k).oninput=qr);$('#a1').onclick=()=>aLoad('clean');$('#a2').onclick=()=>aLoad('gaps');qr();aLoad('gaps')}
-const GR=[['Harbor Pilates','Mindbody',2,'A','stripe',.5,-3,12,2,3,null,null,-2],['Lumen Yoga','WellnessLiving',1,'A','modern',.6,-5,3,2,2,-2,null,-2],['Atlas Training','Other',4,'B','legacy',.8,-8,16,4,5,null,null,-7],['Bloom Barre','Mindbody',1,'A','stripe',.5,-2,10,2,2,null,null,-2],['Cadence Dance','Mariana Tek',3,'A','modern',.7,-5,3,3,4,-2,null,-2],['Nova Lagree','Other',2,'B','stripe',.9,-7,15,4,3,null,null,-6],['Orbit Cycle','Other',1,'B','modern',.6,-2,9,3,2,null,null,-2],['Pine Pole Studio','WellnessLiving',1,'A','stripe',.5,-1,3,2,2,null,null,-1]];
+const GR=[['Harbor Pilates','Mindbody',2,'A','stripe',.5,-3,12,2,3,null,null,-2],['Lumen Yoga','WellnessLiving',1,'A','modern',.6,-5,3,2,2,-2,null,-2],['Atlas Training','Other',4,'B','legacy',.8,-8,16,4,5,null,null,-7],['Bloom Barre','Mindbody',1,'A','stripe',.5,-2,4,2,2,null,null,-2],['Cadence Dance','Mariana Tek',3,'A','modern',.7,-5,3,3,4,-2,null,-2],['Nova Lagree','Other',2,'B','stripe',.9,-7,15,4,3,null,null,-6],['Orbit Cycle','Other',1,'B','modern',.6,-2,3,3,2,null,null,-2],['Pine Pole Studio','WellnessLiving',1,'A','stripe',.5,-1,3,2,2,null,null,-1]];
 let G,gd=0,gs=0,gf=0,gsel=0,gat=null,GL=[];
 const gmk=()=>GR.map(r=>({n:r[0],src:r[1],loc:r[2],lane:route(r[2],r[1],0),pay:r[4],load:r[5],s:r[6],lag:r[7],kd:r[8],sl:r[9],data:r[10],sb:null,sf:null,live:null,t:r[12],rem:null,rg:null}));
 const gcd=m=>qdays(m.lane,m.loc,m.pay,m.load,0).days;
@@ -282,7 +284,7 @@ A.sort((x,y)=>(x[0].live!=null)-(y[0].live!=null)||o[x[1].st]-o[y[1].st]);
 $('#gtb').innerHTML=A.map(x=>{const m=x[0],a=x[1],i=G.indexOf(m);return `<button class="q" data-g="${i}" aria-pressed="${i==gsel}"><span class="bd b${bc[a.st]}" title="${a.st}">${bc[a.st]}</span><span class="n">${m.n}<small>${m.src}, day ${Math.max(0,gd-m.s)} of ${a.c}, ${m.live!=null?a.st:'blocked on '+(a.og=='cutover'?'cutover':a.og)+' ('+a.own+')'}${a.stale?', no touch '+a.idle+' days':''}</small></span></button>`}).join('');
 document.querySelectorAll('[data-g]').forEach(b=>b.onclick=()=>{gsel=+b.dataset.g;gv()});
 const m=G[gsel],a=gas(m),nm=['data','sandbox','staff'];
-$('#gdt').innerHTML=`<h3>${m.n}</h3><p class="mu sm">${m.src}, ${m.loc} ${m.loc>1?'locations':'location'}, lane ${m.lane}, ${m.pay} payments. Committed day ${a.cm-m.s}, forecast day ${a.fc-m.s}.</p>`+['Data received','Sandbox reviewed','Staff verified'].map((l,i)=>`<div class="sig"><span>${l}</span><span class="mu">due day ${a.due[i]-m.s}</span><b>${a.act[i]!=null?'done day '+(a.act[i]-m.s):(gd>a.due[i]?'late':'waiting')}</b></div>`).join('')+(m.live!=null?'<p><b>Live.</b></p>':`<h3 style="margin-top:12px">Draft proactive update</h3><p class="sm" style="border-left:3px solid var(--bl);padding-left:10px">${gmsg(m,a)}</p>`)+blockerPanel(m)}
+$('#gdt').innerHTML=`<h3>${m.n}</h3><p class="mu sm">${m.src}, ${m.loc} ${m.loc>1?'locations':'location'}, lane ${'ABC'.indexOf(m.lane)+1}, ${m.pay} payments. Committed day ${a.cm-m.s}, forecast day ${a.fc-m.s}.</p>`+['Data received','Sandbox reviewed','Staff verified'].map((l,i)=>`<div class="sig"><span>${l}</span><span class="mu">due day ${a.due[i]-m.s}</span><b>${a.act[i]!=null?'done day '+(a.act[i]-m.s):(gd>a.due[i]?'late':'waiting')}</b></div>`).join('')+(m.live!=null?'<p><b>Live.</b></p>':`<h3 style="margin-top:12px">Draft proactive update</h3><p class="sm" style="border-left:3px solid var(--bl);padding-left:10px">${gmsg(m,a)}</p>`)+blockerPanel(m)}
 function ginit(){rs=7;G=gmk();gd=0;gs=0;gf=0;GL=[];$('#glg').innerHTML='';glog('CRM','Eight migrations loaded');gv()}
 $('#gsrc').innerHTML=Object.entries(GS).map(([k,v])=>`<div class="bar"><span style="width:130px">${k[0].toUpperCase()+k.slice(1)}</span><span class="t" style="width:${v*14}px"></span><b>${v}</b></div>`).join('');
 $('#gnx').onclick=gnext;$('#grs').onclick=ginit;
@@ -391,6 +393,16 @@ function unitEconomics(){
   const grossHours=excess*touch,addedHours=late.length*recovery;
   return {total:cohort.length,late:late.length,fixed,excess,grossHours,addedHours,net:(grossHours-addedHours)*rate,rate,earlierInvoices};
 }
+const EV={'Harbor Pilates':[8,11],'Lumen Yoga':[0,2],'Atlas Training':[1,4],'Bloom Barre':[0,2],'Cadence Dance':[0,1],'Nova Lagree':[11,14],'Orbit Cycle':[0,1],'Pine Pole Studio':[0,2]};
+function evidenceRows(){return gmk().map(m=>{const[rq,ff]=EV[m.n];return{n:m.n,src:m.src,us:m.lag,late:standardLaunch(m)-m.s>TG,iv:[rq,ff-rq,m.lag-ff]}})}
+function renderEvidence(){
+  const rows=evidenceRows().sort((a,b)=>b.late-a.late||b.us-a.us),mx=Math.max(...rows.map(r=>r.us)),C=['var(--F)','var(--A)','var(--bl)'],N=['Kickoff to request sent','Request sent to first file','First file to usable file'];
+  const note=r=>r.iv[0]>=5?'request sent late':r.iv[2]>=5?'first file early, usable late':r.late?'late days sit in mapping and training':'';
+  $('#evRows').innerHTML=rows.map(r=>`<div class="evr"><span>${r.n}<small class="mu">${r.src} · ${r.iv.join(' + ')} days${note(r)?' · '+note(r):''}</small></span><div class="tk" role="img" aria-label="${N.map((n,i)=>n+' '+r.iv[i]+' days').join(', ')}">${r.iv.map((v,i)=>v?`<i style="width:${v/mx*100}%;background:${C[i]}" title="${N[i]}: ${v} days"></i>`:'').join('')}</div><b>${r.us} d</b></div>`).join('');
+  const av=(g,i)=>{const x=rows.filter(r=>r.late===g);return +(x.reduce((t,r)=>t+r.iv[i],0)/x.length).toFixed(1)};
+  $('#evRead').innerHTML=`<b>Late studios, on average:</b> ${av(true,0)} days to send the request, ${av(true,1)} to get a first file, ${av(true,2)} to get a usable one. <b>On-time studios:</b> ${av(false,0)}, ${av(false,1)} and ${av(false,2)}.`;
+  $('#evTest').textContent='What would change my mind: if the late studios sent their request on the handoff call too, the delay sits with the provider or the platform, and the lever becomes starting the request earlier. The first-file-to-usable-file interval is the one an import assistant can shorten.';
+}
 function renderEconomics(){
   const s=unitEconomics(),base=s.total-s.late;
   $('#economicsKpis').innerHTML=[
@@ -399,7 +411,7 @@ function renderEconomics(){
   ].map(([l,v])=>'<div><small>'+l+'</small><strong>'+v+'</strong></div>').join('');
   $('#econCalc').textContent=s.grossHours.toFixed(1)+' coordination hours avoided − '+s.addedHours.toFixed(1)+' recovery hours = '+(s.grossHours-s.addedHours).toFixed(1)+' net hours × '+money(s.rate)+'/hour. Capacity value becomes cash savings only if spend falls.';
   $('#econBilling').textContent=money(s.earlierInvoices)+' of first invoices would move into November. Signature-triggered invoices keep their dates. Billing timing is reported separately from labor value.';
-  $('#econDecision').textContent='Decision: '+s.fixed.join(', ')+' has a 20-business-day payment transfer. To deliver all eight by day 10, confirm an earlier processor start or an approved alternative before promising the date. Additional vendor fees reduce the modeled benefit dollar for dollar.';
+  $('#econDecision').textContent='Decision: make “export request sent” a handoff-call milestone, agree the first-file date, and follow up on day 2 to 3.'+(s.fixed.length?' Modelled constraint, not from our discussion: '+s.fixed.join(', ')+' has a '+PD.legacy+'-business-day payment transfer. Test it against real data before promising day 10 for that studio.':'');
   $('#econBreak').textContent='Break-even recovery effort: '+(s.late?s.grossHours/s.late:0).toFixed(1)+' hours per late studio, before external costs.';
 }
 
@@ -412,8 +424,9 @@ function renderEconomics(){
  ['ob','#cap','Compare planned intake with available specialist hours.',4500,()=>{$('#n').value=200;cap();}],
  ['gl','#finance','Start with eight contracts. Check which first invoices move across November close.',3500,()=>{gsel=0;ginit();followups(true);}],
  ['gl','#decision','Advance one business day. Review the highest-priority open checkpoint and its invoice impact.',4000,gnext],
+ ['gl','#evidence','Where the days go: request sent, first file, usable file. Illustrative split, to be replaced by the reconstruction.',7000,renderEvidence],
  ['gl','#blockers','Harbor needs a usable export. Compare that studio dependency with work owned by Kenko.',7000,renderBlockers],
- ['gl','#qo','Quote a launch with a legacy payment processor. Check the binding lead time.',5000,()=>{$('#qp').value='legacy';qr();}],
+ ['gl','#qo','Quote a launch with a legacy payment processor. This is a modelled constraint we did not discuss, so I would test it separately.',5000,()=>{$('#qp').value='legacy';qr();}],
  ['gl','#ao','Hold cutover while record counts and sign-offs are outstanding.',4700,()=>aLoad('gaps')],
  ['gl','#ao','Recheck a corrected sample and verify that all ten checks pass.',4000,()=>aLoad('clean')],
  ['gl','#gday','Advance another business day. Inspect the migration queue and follow-up counters.',3400,gnext],
@@ -427,6 +440,7 @@ function renderEconomics(){
  ['pl','#ledgerPanel','Inspect membership and access-control demand from gyms.',4000,()=>filterLedger('Gyms')],
  ['pl','#ledgerPanel','Review boutique requests. Deduplicate opportunities before funding work.',5000,()=>filterLedger('Boutique')]
  ];
+ scenes.sort((a,b)=>['gl','cc','ob','pl'].indexOf(a[0])-['gl','cc','ob','pl'].indexOf(b[0]));
  let tourState='idle',sceneIndex=-1,tourTimer=null,manualVersion=0;
  function tourControls(){
   const running=tourState==='playing',paused=tourState==='paused';
@@ -484,7 +498,7 @@ function renderEconomics(){
  tourControls();
 
 for(const id of ['laborRate','touchMinutes','recoveryHours'])$('#'+id).onchange=renderEconomics;
-renderEconomics();
+renderEconomics();renderEvidence();
 startTour();
 </script>
 </body>
