@@ -1,7 +1,8 @@
-"""Go-Live Assurance MCP server v2.
+"""Go-Live Assurance MCP server v2.1.
 Mirrors Go-Live_Velocity_Model.xlsx. All numbers are illustrative: replace with your measured baseline.
 v2 adds: customer-vs-Kenko delay attribution, blocker and owner per migration, follow-up/stale-touch detection,
 next actions with due dates, source-aware proactive customer updates, and a portfolio view."""
+import math
 from datetime import date, timedelta
 from mcp.server.fastmcp import FastMCP
 
@@ -30,21 +31,27 @@ def err(m): return {"error": m}
 @mcp.tool()
 def route_lane(locations: int, source_system: str, data_quality: str = "clean", integrations: bool = False) -> dict:
     """Assign a delivery lane at sales handoff (A templated, B standard, C complex)."""
+    if locations < 1: return err("locations must be at least 1")
     known = source_system.strip().lower() in KNOWN
     lane = "C" if integrations or locations > 10 else "A" if locations <= 3 and known else "B"
-    why = {"A": "1-3 locations on a source with a pre-built mapper", "B": "multi-location or no pre-built mapper", "C": "integrations or 10+ locations"}[lane]
+    why = {"A": "1-3 locations on a source with a pre-built mapper", "B": "4-10 locations, or a source without a pre-built mapper", "C": "integrations or 10+ locations"}[lane]
     return {"lane": lane, "needs_cleanup": data_quality != "clean", "reasons": [why]}
 
 @mcp.tool()
 def quote_commit_date(signed: str, lane: str, locations: int, processor: str, team_load: float, cleanup: bool = False) -> dict:
     """Commit date = lane P90 (+location uplift) vs payment lead time (parallel, longer wins) + capacity buffer (+cleanup); checked against the 3-week target."""
+    lane, processor = lane.strip().upper(), processor.strip().lower()
     if lane not in LANES or processor not in PAY: return err("unknown lane or processor")
-    p90, up = LANES[lane]; lane_wd = p90 + up * (locations - 1); buf = (0 if team_load < .71 else 2 if team_load < .86 else 5) + (CLEAN if cleanup else 0)
-    days = int(-(-max(lane_wd, PAY[processor]) // 1)) + buf
-    s = D(signed); g = [wd(s, rnd(days * x)) for x in GATES]; c = wd(s, days); binding = "lane" if lane_wd >= PAY[processor] else "payment"
+    if locations < 1 or not 0 <= team_load <= 1: return err("locations must be >= 1 and team_load between 0 and 1")
+    try: s = D(signed)
+    except ValueError: return err("signed must be YYYY-MM-DD")
+    if not s: return err("signed is required")
+    p90, up = LANES[lane]; lane_wd = p90 + up * (locations - 1); cap = 0 if team_load < .71 else 2 if team_load < .86 else 5; buf = cap + (CLEAN if cleanup else 0)
+    days = math.ceil(max(lane_wd, PAY[processor])) + buf
+    g = [wd(s, rnd(days * x)) for x in GATES]; c = wd(s, days); binding = "lane" if lane_wd >= PAY[processor] else "payment"
     levers = [] if days <= TARGET else (["Start payment transfer on Day 0 and escalate the processor request"] if binding == "payment" else []) + \
         (["Phase the launch: members, schedule and payments first; history after"] if lane != "A" else []) + \
-        (["Add specialist capacity or rebalance load"] if buf else []) + ["Pre-book kickoff and cutover slots; run mapping in parallel"]
+        (["Add specialist capacity or rebalance load"] if cap else []) + (["Start data cleanup in parallel with the export"] if cleanup else []) + ["Pre-book kickoff and cutover slots; run mapping in parallel"]
     return {"commit_days": days, "commit_date": c.isoformat(), "binding": binding, "within_target": days <= TARGET, "gap_wd": max(0, days - TARGET), "levers": levers,
             "gates": {"data": g[0].isoformat(), "sandbox": g[1].isoformat(), "staff": g[2].isoformat(), "go_no_go": wd(c, -GNG).isoformat()}}
 
@@ -56,9 +63,11 @@ def audit_cutover_readiness(source: dict, migrated: dict, excluded: dict, tests:
     """Zero-tolerance gate: migrated = source - approved exclusions for every entity, and every required test passed."""
     miss = [e for e in ENT if e not in source or e not in migrated]
     if miss: return err(f"missing counts for: {', '.join(miss)}")
+    inv = [e for e in ENT if source[e] < 0 or migrated[e] < 0 or excluded.get(e, 0) < 0 or excluded.get(e, 0) > source[e]]
+    if inv: return err(f"invalid counts (negative, or exclusions above source) for: {', '.join(inv)}")
     bad = [{"entity": e, "expected": source[e] - excluded.get(e, 0), "migrated": migrated[e], "delta": migrated[e] - (source[e] - excluded.get(e, 0))}
            for e in ENT if migrated[e] != source[e] - excluded.get(e, 0)]
-    failed = [t for t in REQ if not tests.get(t)]
+    failed = [t for t in REQ if tests.get(t) is not True]
     return {"decision": "no_go" if bad or failed else "go", "mismatches": bad, "failed_tests": failed, "checks_run": len(ENT) + len(REQ)}
 
 @mcp.tool()
@@ -67,18 +76,21 @@ def learn_source_profile(history: list[dict]) -> dict:
     out = {}
     for h in history:
         out.setdefault(h["source"].strip().lower(), []).append(h)
-    def pct(v, p): v = sorted(v); return v[min(len(v) - 1, int(p * len(v)))]
+    def pct(v, p): v = sorted(v); return v[max(0, math.ceil(p * len(v)) - 1)]   # nearest rank
     return {s: {"n": len(r), "p50_wait": pct([x["export_wait_days"] for x in r], .5), "p90_wait": pct([x["export_wait_days"] for x in r], .9),
                 "late_rate": round(1 - sum(1 for x in r if x["on_time"]) / len(r), 2)} for s, r in out.items()}
 
 @mcp.tool()
 def assess_go_live(signed: str, lane: str, locations: int, processor: str, team_load: float, as_of: str, data_received: str = "",
                    sandbox_done: str = "", staff_verified: str = "", payment_started: str = "", customer_slip: int = -1, live: str = "",
-                   last_touch: str = "", source_system: str = "other") -> dict:
+                   last_touch: str = "", source_system: str = "other", cleanup: bool = False) -> dict:
     """Status, forecast, who is blocking (customer or kenko), follow-up gaps, next actions with due dates, and whether to notify the customer.
     customer_slip=-1 means attribute delay automatically from gate actuals; pass a number to override."""
-    q = quote_commit_date(signed, lane, locations, processor, team_load)
+    q = quote_commit_date(signed, lane, locations, processor, team_load, cleanup)
     if "error" in q: return q
+    try: [D(x) for x in (as_of, data_received, sandbox_done, staff_verified, live, last_touch)]
+    except ValueError: return err("dates must be YYYY-MM-DD")
+    if not as_of: return err("as_of is required")
     s, a, commit = D(signed), D(as_of), D(q["commit_date"])
     due = [D(q["gates"][k]) for k in ("data", "sandbox", "staff")]; act = [D(data_received), D(sandbox_done), D(staff_verified)]
     slips = [max(0, nwd(d, x) - 1) if x else (nwd(d, a) - 1 if a > d else 0) for d, x in zip(due, act)]
@@ -131,15 +143,18 @@ def portfolio_view(accounts: list[dict], as_of: str) -> dict:
     """Every in-flight and recent migration with status, blocker and owner, plus a summary for CS and executives. Each account dict holds a name plus the assess_go_live inputs."""
     rows = []
     for acc in accounts:
-        acc = dict(acc); name = acc.pop("name", "?"); r = assess_go_live(as_of=as_of, **acc); r["name"] = name; rows.append(r)
-    rows = [r for r in rows if "error" not in r]
+        acc = dict(acc); name = acc.pop("name", "?")
+        try: r = assess_go_live(as_of=as_of, **acc)
+        except TypeError as e: r = err(str(e))
+        r["name"] = name; rows.append(r)
+    skipped = [{"name": r["name"], "error": r["error"]} for r in rows if "error" in r]; rows = [r for r in rows if "error" not in r]
     rank = {"Red": 0, "Amber": 1, "Green": 2}; rows.sort(key=lambda r: rank.get(r["status"], 3))
     live = [r for r in rows if r["status"].startswith("Live")]; flight = [r for r in rows if not r["status"].startswith("Live")]
     return {"summary": {"in_flight": len(flight), "by_status": {k: sum(r["status"] == k for r in flight) for k in ("Red", "Amber", "Green")},
                         "blocked_on_customer": sum(r["blocked_on"] == "customer" for r in flight), "blocked_on_kenko": sum(r["blocked_on"] == "kenko" for r in flight),
                         "stale_follow_ups": sum(r["stale"] for r in flight), "promise_at_risk": sum(r["promise_at_risk"] for r in flight),
                         "live_on_time_rate": round(sum(r["status"] == "Live - on time" for r in live) / len(live), 2) if live else None},
-            "accounts": rows}
+            "accounts": rows, "skipped": skipped}
 
 if __name__ == "__main__":
     mcp.run()
