@@ -1,4 +1,4 @@
-"""Go-Live Assurance MCP server v2.1.
+"""Go-Live Assurance MCP server v3.
 Mirrors Go-Live_Velocity_Model.xlsx. All numbers are illustrative: replace with your measured baseline.
 v2 adds: customer-vs-Kenko delay attribution, blocker and owner per migration, follow-up/stale-touch detection,
 next actions with due dates, source-aware proactive customer updates, and a portfolio view."""
@@ -7,7 +7,7 @@ from datetime import date, timedelta
 from mcp.server.fastmcp import FastMCP
 
 mcp = FastMCP("go-live-assurance")
-TARGET = 15                                                  # 3-week go-live target (business days)
+TARGET = 10                                                  # two-week go-live target (business days)
 LANES = {"A": (8, .5), "B": (15, 1), "C": (25, 1.5)}         # P90 business days, extra days per added location
 PAY = {"stripe": 5, "modern": 10, "legacy": 20}              # payment-transfer lead time (business days)
 GATES, GNG, WIN, DAY_N, SLACK = (.25, .5, .7), 2, 2, 2, 2    # gate % of window, go/no-go, warn window, Day-N check, absorbable slip
@@ -34,17 +34,17 @@ def route_lane(locations: int, source_system: str, data_quality: str = "clean", 
     if locations < 1: return err("locations must be at least 1")
     known = source_system.strip().lower() in KNOWN
     lane = "C" if integrations or locations > 10 else "A" if locations <= 3 and known else "B"
-    why = {"A": "1-3 locations on a source with a pre-built mapper", "B": "4-10 locations, or a source without a pre-built mapper", "C": "integrations or 10+ locations"}[lane]
+    why = {"A": "1-3 locations on a source with a pre-built mapper", "B": "4-10 locations, or a source without a pre-built mapper", "C": "integrations or more than 10 locations"}[lane]
     return {"lane": lane, "needs_cleanup": data_quality != "clean", "reasons": [why]}
 
 @mcp.tool()
-def quote_commit_date(signed: str, lane: str, locations: int, processor: str, team_load: float, cleanup: bool = False) -> dict:
-    """Commit date = lane P90 (+location uplift) vs payment lead time (parallel, longer wins) + capacity buffer (+cleanup); checked against the 3-week target."""
+def quote_commit_date(signed: str, lane: str, locations: int, processor: str, team_load: float, cleanup: bool = False, kickoff: str = "") -> dict:
+    """Commit date = lane P90 (+location uplift) vs payment lead time (parallel, longer wins) + capacity buffer (+cleanup); checked against the two-week target. Supply kickoff when it differs from signature."""
     lane, processor = lane.strip().upper(), processor.strip().lower()
     if lane not in LANES or processor not in PAY: return err("unknown lane or processor")
     if locations < 1 or not 0 <= team_load <= 1: return err("locations must be >= 1 and team_load between 0 and 1")
-    try: s = D(signed)
-    except ValueError: return err("signed must be YYYY-MM-DD")
+    try: s = D(kickoff or signed)
+    except ValueError: return err("signed and kickoff must be YYYY-MM-DD")
     if not s: return err("signed is required")
     p90, up = LANES[lane]; lane_wd = p90 + up * (locations - 1); cap = 0 if team_load < .71 else 2 if team_load < .86 else 5; buf = cap + (CLEAN if cleanup else 0)
     days = math.ceil(max(lane_wd, PAY[processor])) + buf
@@ -63,6 +63,8 @@ def audit_cutover_readiness(source: dict, migrated: dict, excluded: dict, tests:
     """Zero-tolerance gate: migrated = source - approved exclusions for every entity, and every required test passed."""
     miss = [e for e in ENT if e not in source or e not in migrated]
     if miss: return err(f"missing counts for: {', '.join(miss)}")
+    if any(type(n) is not int for e in ENT for n in (source[e], migrated[e], excluded.get(e, 0))):
+        return err("all record counts must be integers")
     inv = [e for e in ENT if source[e] < 0 or migrated[e] < 0 or excluded.get(e, 0) < 0 or excluded.get(e, 0) > source[e]]
     if inv: return err(f"invalid counts (negative, or exclusions above source) for: {', '.join(inv)}")
     bad = [{"entity": e, "expected": source[e] - excluded.get(e, 0), "migrated": migrated[e], "delta": migrated[e] - (source[e] - excluded.get(e, 0))}
@@ -83,27 +85,27 @@ def learn_source_profile(history: list[dict]) -> dict:
 @mcp.tool()
 def assess_go_live(signed: str, lane: str, locations: int, processor: str, team_load: float, as_of: str, data_received: str = "",
                    sandbox_done: str = "", staff_verified: str = "", payment_started: str = "", customer_slip: int = -1, live: str = "",
-                   last_touch: str = "", source_system: str = "other", cleanup: bool = False) -> dict:
+                   last_touch: str = "", source_system: str = "other", cleanup: bool = False, kickoff: str = "") -> dict:
     """Status, forecast, who is blocking (customer or kenko), follow-up gaps, next actions with due dates, and whether to notify the customer.
     customer_slip=-1 means attribute delay automatically from gate actuals; pass a number to override."""
-    q = quote_commit_date(signed, lane, locations, processor, team_load, cleanup)
+    q = quote_commit_date(signed, lane, locations, processor, team_load, cleanup, kickoff)
     if "error" in q: return q
     try: [D(x) for x in (as_of, data_received, sandbox_done, staff_verified, live, last_touch)]
     except ValueError: return err("dates must be YYYY-MM-DD")
     if not as_of: return err("as_of is required")
-    s, a, commit = D(signed), D(as_of), D(q["commit_date"])
+    s, a, commit = D(kickoff or signed), D(as_of), D(q["commit_date"])
     due = [D(q["gates"][k]) for k in ("data", "sandbox", "staff")]; act = [D(data_received), D(sandbox_done), D(staff_verified)]
     slips = [max(0, nwd(d, x) - 1) if x else (nwd(d, a) - 1 if a > d else 0) for d, x in zip(due, act)]
     total = max(slips)
     cust = max(0, min(total, slips[0] + max(0, slips[2] - max(slips[1], slips[0])))) if customer_slip < 0 else customer_slip   # delay not explained by earlier gates
-    rb = wd(commit, cust); net = 0 if live else max(0, total - cust); fc = D(live) or wd(rb, max(0, net - SLACK))
+    rb = wd(commit, cust); net = 0 if live else max(0, total - cust); fc = D(live) or max(wd(a, 1), wd(rb, max(0, net - SLACK)))
     gate = None if live else next((g for g, x in zip(("data", "sandbox", "staff"), act) if not x), "cutover")
     blocked = "none" if live else OWNER[gate]
     late = bool(gate in ("data", "sandbox", "staff") and a > due[("data", "sandbox", "staff").index(gate)])
     idle = nwd(D(last_touch) if last_touch else s, a) - 1; stale = not live and idle >= STALE
     dn = wd(s, DAY_N); warn = ""
     if not live:
-        if not act[0] and a >= dn: warn = f"Data export not started by Day {DAY_N}"
+        if not act[0] and a >= dn: warn = f"Data file outstanding on Day {DAY_N}"
         elif not payment_started and a >= dn: warn = f"Payment transfer not started by Day {DAY_N}"
         elif not act[0] and a >= wd(due[0], -WIN): warn = "Data gate due soon"
         elif act[0] and not act[1] and a >= wd(due[1], -WIN): warn = "Sandbox gate due soon"
@@ -155,6 +157,49 @@ def portfolio_view(accounts: list[dict], as_of: str) -> dict:
                         "stale_follow_ups": sum(r["stale"] for r in flight), "promise_at_risk": sum(r["promise_at_risk"] for r in flight),
                         "live_on_time_rate": round(sum(r["status"] == "Live - on time" for r in live) / len(live), 2) if live else None},
             "accounts": rows, "skipped": skipped}
+
+@mcp.tool()
+def first_invoice_bridge(accounts: list[dict], close_date: str) -> dict:
+    """Compare cumulative first invoices through the close for distinct USD contracts.
+    Each row needs contract_id, first_invoice_cents, billing_trigger (signature or go_live),
+    signed, committed and forecast (ISO dates). For a live contract use its actual launch
+    date as forecast. Optional blocker, action_owner, due and next_action pass through.
+    Amounts are full first invoices. Collections and revenue recognition are separate.
+    """
+    try:
+        close = date.fromisoformat(close_date)
+    except (TypeError, ValueError):
+        return err("invalid close_date")
+    seen, rows = set(), []
+    planned = pushed = pulled = 0
+    for row in accounts:
+        key = row.get("contract_id")
+        if not isinstance(key, str) or not key.strip() or key.strip() in seen:
+            return err("each row needs a distinct contract_id")
+        seen.add(key.strip())
+        fee, trigger = row.get("first_invoice_cents"), row.get("billing_trigger")
+        if type(fee) is not int or fee < 0 or trigger not in ("go_live", "signature"):
+            return err(f"{key}: invalid invoice amount or billing trigger")
+        try:
+            signed, committed, forecast = (date.fromisoformat(row[k]) for k in ("signed", "committed", "forecast"))
+        except (KeyError, TypeError, ValueError):
+            return err(f"{key}: invalid or missing contract date")
+        if min(committed, forecast) < signed:
+            return err(f"{key}: launch cannot precede signature")
+        baseline, revised = (signed, signed) if trigger == "signature" else (committed, forecast)
+        before = fee if baseline <= close else 0
+        after = fee if revised <= close else 0
+        delta = after - before
+        planned += before
+        pushed += max(0, -delta)
+        pulled += max(0, delta)
+        rows.append({"contract_id": key, "billing_trigger": trigger, "first_invoice_cents": fee,
+                     "planned_invoice": baseline.isoformat(), "revised_invoice": revised.isoformat(),
+                     "impact_cents": delta, **{k: row.get(k) for k in ("blocker", "action_owner", "due", "next_action")}})
+    return {"currency": "USD", "close_date": close.isoformat(), "planned_cents": planned,
+            "pushed_out_cents": pushed, "pulled_in_cents": pulled, "revised_cents": planned - pushed + pulled,
+            "contracts": sorted(rows, key=lambda row: row["impact_cents"])}
+
 
 if __name__ == "__main__":
     mcp.run()
