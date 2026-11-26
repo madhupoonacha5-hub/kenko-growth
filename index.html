@@ -3,8 +3,8 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Kenko Growth Autopilot</title>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700&display=swap">
+<title>Kenko Growth Autopilot | Finance walkthrough</title>
+
 <style>
 :root{--bg:#f1f4f5;--pn:#fff;--ink:#11202a;--mu:#586a76;--ln:#d6dee3;--bl:#0f6e8c;--F:#e8590c;--R:#c92a2a;--A:#d99a00;--G:#2b9348;
 --hf:"Bricolage Grotesque","Segoe UI",system-ui,sans-serif;--bf:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
@@ -56,20 +56,28 @@ select,input[type=number],input[type=date]{font:inherit;color:var(--ink);backgro
 .tb{width:100%;border-collapse:collapse;font-size:.86rem}.tb th,.tb td{padding:5px 6px;border-top:1px solid var(--ln);text-align:right}.tb th:first-child,.tb td:first-child{text-align:left}.tb input{width:88px;text-align:right}
 .dec{display:inline-block;padding:2px 12px;border-radius:6px;color:#fff;font:700 1rem var(--hf)}.dec.go{background:var(--G)}.dec.no{background:var(--R)}
 footer{margin-top:36px;border-top:1px solid var(--ln);padding-top:14px;font-size:.84rem;color:var(--mu)}
+.tourbar{position:sticky;top:0;z-index:5;display:flex;gap:12px;align-items:center;flex-wrap:wrap;background:var(--pn);border:1px solid var(--ln);border-top:3px solid var(--bl);border-radius:8px;padding:10px 14px;margin:0 0 18px;box-shadow:0 2px 8px #12202b12}.tourbar p{flex:1 1 260px;margin:0}.tourbar [hidden]{display:none}.tab,.tab [id]{scroll-margin-top:104px}
+#finance{margin:14px 0 20px;border-top:3px solid var(--bl)}#bridge{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin:14px 0}#bridge>div{background:var(--bg);padding:10px;border-radius:6px}#bridge small{display:block;color:var(--mu)}#bridge strong{font:700 1.65rem var(--hf)}
+#decision{padding:12px;border-left:3px solid var(--bl);background:var(--bg);margin:14px 0}#decision p{margin:5px 0 0}.wide{overflow-x:auto}.wide td,.wide th{white-space:nowrap}.wide th:first-child{text-align:left}
+@media(max-width:700px){#bridge{grid-template-columns:1fr 1fr}.tourbar{gap:6px;padding:6px 8px}.tourbar p{font-size:.84rem}.tab,.tab [id]{scroll-margin-top:150px}.g2,.grid,.kpi{grid-template-columns:minmax(0,1fr)}.grid>*{min-width:0}}
+#segmentHeading{margin-bottom:12px}#tourStep{font-size:.85rem}.tourbar{scroll-margin:0}
+@media(prefers-reduced-motion:no-preference){#led .bar .t{transform-origin:left;animation:ledgerReveal .5s ease-out}@keyframes ledgerReveal{from{transform:scaleX(0)}to{transform:scaleX(1)}}}
+.review{margin:16px 0}.casehead{display:flex;align-items:baseline;justify-content:space-between;gap:8px;flex-wrap:wrap}.casehead strong{color:var(--bl);font-size:.85rem}#blockerCases{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(280px,100%),1fr));gap:16px}.casecard,.econDecision{background:var(--bg);padding:14px;border-left:3px solid var(--bl);margin:8px 0}.casecard dt{font-weight:700;font-size:.83rem;margin-top:6px}.casecard dd{margin:0;font-size:.9rem}.casecard dl{margin:6px 0}#economicsKpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(180px,100%),1fr));gap:10px;margin:12px 0}#economicsKpis div{background:var(--bg);padding:10px}#economicsKpis strong{display:block;font:700 1.35rem var(--hf)}
 </style>
 </head>
 <body>
 <main>
 <header>
 <h1>Kenko Growth Autopilot</h1>
-<p class="mu" style="max-width:66ch;margin-top:12px">A working emulator of how one customer-health layer can score every studio, run the right playbook, speed up onboarding and show leadership where the product should go next. Built around what Kenko says publicly: overnight migration, a dedicated onboarding coach, growth coaches and an AI marketing platform. All account data is synthetic.</p>
+<p class="mu" style="margin-top:10px">Follow a studio from portfolio review through migration, first billing and product investment. All accounts and financial terms are illustrative.</p>
 <nav aria-label="Views"><button data-tab="cc" aria-pressed="true">Command center</button><button data-tab="ob" aria-pressed="false">Onboarding accelerator</button><button data-tab="gl" aria-pressed="false">Go-live assurance</button><button data-tab="pl" aria-pressed="false">Product demand ledger</button></nav>
 </header>
+<div class="tourbar" role="region" aria-label="Guided walkthrough"><button id="auto" class="pri">Run full demo</button><button id="exitTour" hidden>Exit tour</button><b id="tourStep">Four views</b><p id="tourCopy" aria-live="polite">The walkthrough plays automatically. Pause to inspect any account.</p></div>
 
 <section id="cc" class="tab on">
 <div class="kpi" id="kpi"></div>
 <div class="chips" id="chips" aria-label="Connected sources"></div>
-<div style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:14px"><button id="auto" aria-pressed="false">Start autopilot</button><button id="inj">Inject a bad week</button><button id="rst">Reset</button></div>
+<div style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:14px"><button id="portfolioAuto" aria-pressed="false">Run queue continuously</button><button id="inj">Inject a bad week</button><button id="rst">Reset</button></div>
 <div class="grid">
 <div><h2>Daily queue</h2><p class="mu sm">Ranked by FRAG band, then ARR.</p><div id="queue"></div></div>
 <div class="pn" id="detail"></div>
@@ -79,7 +87,7 @@ footer{margin-top:36px;border-top:1px solid var(--ln);padding-top:14px;font-size
 
 <section id="ob" class="tab">
 <h2>Onboarding accelerator</h2>
-<p class="mu" style="max-width:70ch">Kenko promises done-for-you migration with a dedicated coach, and it is hiring for migration automation. This shows one way to cut the human minutes per studio so the same team can absorb more inflow.</p>
+<p class="mu" style="max-width:70ch">Compare the time spent on a sample migration with the specialist hours available for new studios.</p>
 <div class="g2">
 <div class="pn"><h3>Harbor Pilates moves over from another platform</h3><button class="pri" id="obrun" style="margin:8px 0">Run onboarding</button>
 <div class="tr" style="height:12px"><i id="obp" style="width:0"></i></div><ol class="st" id="obs"></ol><p id="obsum" class="sm"></p></div>
@@ -91,12 +99,19 @@ footer{margin-top:36px;border-top:1px solid var(--ln);padding-top:14px;font-size
 
 <section id="gl" class="tab">
 <h2>Go-live assurance</h2>
-<p class="mu" style="max-width:72ch">Illustrative starting point: about half of migrations go live inside three weeks, to be replaced with Kenko’s measured baseline. The usual causes are missed follow-ups, no visible checkpoints, customers who send data late, and customers who are never told early. Press Next day to watch the same eight migrations with and without the assurance rules. Figures and waits are illustrative.</p>
-<div class="g2" style="margin:14px 0"><div class="pn sm"><b>What the rules add</b><ol style="margin:6px 0 0;padding-left:18px"><li>Gates at 25%, 50% and 70% of the window, plus a Day 2 check</li><li>One owner and one blocker for every migration</li><li>Automatic follow-up when no one has touched an account for 3 business days</li><li>Customer-caused delay separated from Kenko-caused delay</li><li>A proactive update that names the source platform and its usual export wait</li><li>Three delivery lanes, with a commit date that runs lane work and the payment transfer in parallel and checks it against the 3-week target</li><li>A zero-tolerance cutover audit: five record counts must reconcile and five pre-launch checks must pass</li></ol></div>
-<div class="pn sm"><b>Export wait by source (illustrative, business days)</b><div id="gsrc" style="margin-top:6px"></div><p class="mu" style="margin-top:8px">In production these come from Kenko’s own history through the learn_source_profile tool.</p></div></div>
+<p class="mu" style="max-width:72ch">The operating target is ten business days from kickoff. Each studio also has its own quoted date. Track both before updating the billing forecast.</p>
+<section class="pn" id="finance"><h2>First-invoice forecast</h2><p id="asof" class="mu"></p><div id="bridge"></div><div id="decision"></div>
+<div class="wide"><table class="tb"><caption style="text-align:left">Eight sample contracts · first invoice only</caption><thead><tr><th>Studio</th><th>Billing starts</th><th>First invoice</th><th>Launch: committed → forecast / actual</th><th>Next gate</th><th>Close impact</th></tr></thead><tbody id="exposure"></tbody></table></div>
+<p class="sm mu" style="margin-top:10px">One full monthly fee is invoiced at signature or launch. These totals cover cumulative first invoices through November 30. Collections, tax, credits, churn and revenue recognition are outside this model.</p></section>
+<section class="pn review" id="blockers"><h2>What is solved and who acts next?</h2><p class="mu" id="caseCount"></p><div id="blockerCases"></div><p class="sm mu">The checkpoint owner identifies who must act next. Confirm the cause before attributing a delay.</p></section>
+<section class="pn review" id="economics"><h2>What would 100% live in two weeks be worth?</h2><p class="mu">Eight illustrative contracts, measured from kickoff to production. Compare the standard delivery path with a conditional day-10 launch for every late studio. Earlier launches keep their original date.</p>
+<div id="economicsKpis"></div><p id="econCalc"></p><p id="econBilling"></p><div class="econDecision"><b id="econDecision"></b><p id="econBreak"></p></div>
+<div class="f2"><label>Loaded hourly cost (USD)<select id="laborRate"><option>50</option><option selected>75</option><option>100</option></select></label><label>Coordination minutes per excess day<select id="touchMinutes"><option>15</option><option selected>30</option><option>60</option></select></label><label>Added recovery hours per late studio<select id="recoveryHours"><option>0</option><option selected>2</option><option>4</option></select></label></div><p class="sm mu">The standard path uses sample export, mapping, training and processor lead times. Core migration effort is common to both cases. Scenario inputs are assumptions.</p></section>
+<div class="g2" style="margin:14px 0"><div class="pn sm"><b>What the rules add</b><ol style="margin:6px 0 0;padding-left:18px"><li>Gates at 25%, 50% and 70% of the window, plus a Day 2 check</li><li>One owner and one blocker for every migration</li><li>Automatic follow-up when no one has touched an account for 3 business days</li><li>Estimated delay by checkpoint owner; verify the cause with the studio</li><li>A proactive update that names the source platform and its usual export wait</li><li>Three delivery lanes, with a commit date that runs lane work and the payment transfer in parallel and checks it against the two-week target</li><li>A zero-tolerance cutover audit: five record counts must reconcile and five pre-launch checks must pass</li></ol></div>
+<div class="pn sm"><b>Export wait by source (illustrative, business days)</b><div id="gsrc" style="margin-top:6px"></div><p class="mu" style="margin-top:8px">The optional MCP tool learn_source_profile can summarize observed export waits by platform.</p></div></div>
 <div class="g2" style="margin:14px 0">
 <div class="pn" id="qt"><h3>Quote a go-live date at handoff</h3><p class="mu sm">Routes the migration to a lane, then runs lane work and the payment transfer in parallel. The longer path sets the date.</p>
-<div class="f2"><label>Signed<input id="qd" type="date"></label><label>Locations<input id="ql" type="number" min="1" max="40" value="2"></label>
+<div class="f2"><label>Kickoff<input id="qd" type="date"></label><label>Locations<input id="ql" type="number" min="1" max="40" value="2"></label>
 <label>Source platform<select id="qs"><option>Mindbody</option><option>WellnessLiving</option><option>Mariana Tek</option><option>Other</option></select></label>
 <label>Payment processor<select id="qp"><option value="stripe">Stripe, 5 days</option><option value="modern">Modern processor, 10 days</option><option value="legacy">Legacy processor, 20 days</option></select></label>
 <label>Data quality<select id="qq"><option value="clean">Clean</option><option value="messy">Needs cleanup</option></select></label>
@@ -116,11 +131,11 @@ footer{margin-top:36px;border-top:1px solid var(--ln);padding-top:14px;font-size
 
 <section id="pl" class="tab">
 <h2>Product demand ledger</h2>
-<p class="mu" style="max-width:70ch">Every lost deal, escalation and request is tagged with its segment and ARR. After a quarter the executive team sees what is blocking growth, with chains and gyms separated from boutique. Figures below are illustrative.</p>
-<div class="pn"><div style="display:flex;flex-wrap:wrap;gap:6px" id="flt"></div><div id="led" style="margin-top:12px"></div><p id="ledt" style="font-weight:700;margin-top:10px"></p></div>
+<p class="mu" style="max-width:70ch">Compare demand by segment. A deal may appear under several requests. Deduplicate opportunities and confirm buying intent before funding development.</p>
+<div class="pn" id="ledgerPanel"><h3 id="segmentHeading"></h3><div style="display:flex;flex-wrap:wrap;gap:6px" id="flt"></div><div id="led" style="margin-top:12px"></div><p id="ledt" style="font-weight:700;margin-top:10px"></p></div>
 </section>
 
-<footer>Emulator only. No live connections are made: the feed simulates read-only calls to billing, support, product usage, CRM, onboarding and engineering tools. Scores come from fixed rules, and the language model only explains and drafts. Public facts about Kenko come from its website, job listings and review sites; thresholds, pricing and take-rates here are assumptions to verify.</footer>
+<footer>Emulator only. No live connections are made: the feed simulates read-only calls to billing, support, product usage, CRM, onboarding and engineering tools. Scores come from fixed rules, and the language model only explains and drafts. Financial terms, thresholds and timing assumptions are synthetic.</footer>
 </main>
 <script>
 const $=s=>document.querySelector(s),sleep=ms=>new Promise(r=>setTimeout(r,ms));
@@ -149,7 +164,7 @@ const col={F:'var(--F)',R:'var(--R)',A:'var(--A)',G:'var(--G)'};
 $('#kpi').innerHTML=`<div class="pn"><span class="mu sm">Sample portfolio ARR</span><b>$${tot.toFixed(1)}k</b><div class="stack">${'FRAG'.split('').map(k=>`<i style="width:${t[k]/tot*100}%;background:${col[k]}"></i>`).join('')}</div></div>
 <div class="pn"><span class="mu sm">ARR at risk (Fire and Red)</span><b style="color:var(--R)">$${(t.F+t.R).toFixed(1)}k</b><span class="mu sm">${A.filter(a=>'FR'.includes(band(a))).length} accounts</span></div>
 <div class="pn"><span class="mu sm">Accounts by band</span><b>${'FRAG'.split('').map(k=>`<span class="bd b${k}" style="margin-right:4px">${A.filter(a=>band(a)==k).length}</span>`).join('')}</b></div>
-<div class="pn"><span class="mu sm">Expansion ready or booked</span><b style="color:var(--G)">${ex}</b><span class="mu sm">Studio #2 conversations</span></div>`}
+<div class="pn"><span class="mu sm">Expansion conversations</span><b style="color:var(--G)">${ex}</b><span class="mu sm">Studio #2 conversations</span></div>`}
 function queue(){$('#queue').innerHTML=order().map(i=>{const a=A[i],b=band(a);return `<button class="q" data-i="${i}" aria-pressed="${i==sel}"><span class="bd b${b}" title="${NM[b]}">${b}</span><span class="n">${a.n}<small>${a.s}, ${a.st} ${a.st>1?'studios':'studio'}, $${a.arr}k, CHI ${score(a)}</small></span></button>`}).join('');
 document.querySelectorAll('#queue button[data-i]').forEach(b=>b.onclick=()=>{sel=+b.dataset.i;view()})}
 function detail(prog=-1){const a=A[sel],b=band(a),p=PB[pick(a)];
@@ -160,21 +175,21 @@ $('#detail').innerHTML=`<div style="display:flex;justify-content:space-between;g
 <button class="pri" id="run" ${busy?'disabled':''}>Run playbook</button>`;
 $('#run').onclick=()=>run(sel)}
 const view=()=>{kpi();queue();detail()};
-async function run(i){if(busy)return;busy=true;sel=i;const a=A[i],k=pick(a),p=PB[k],b0=band(a),s0=score(a);detail(-1);
+async function run(i){if(busy)return;const version=manualVersion;busy=true;sel=i;const a=A[i],k=pick(a),p=PB[k],b0=band(a),s0=score(a);detail(-1);
 log('CRM',`Playbook “${p.n}” opened for ${a.n}`);
-for(let j=0;j<p.s.length;j++){await sleep(750);log(p.s[j][0],p.s[j][1]);detail(j)}
-await sleep(600);p.f(a);const b1=band(a);log('CRM',`${a.n}: ${NM[b0]} to ${NM[b1]}, CHI ${s0} to ${score(a)}`);busy=false;view()}
+for(let j=0;j<p.s.length;j++){await sleep(750);if(version!==manualVersion)return;log(p.s[j][0],p.s[j][1]);detail(j)}
+await sleep(600);if(version!==manualVersion)return;p.f(a);const b1=band(a);log('CRM',`${a.n}: ${NM[b0]} to ${NM[b1]}, CHI ${s0} to ${score(a)}`);busy=false;view()}
 async function tick(){if(busy)return;const o=order().find(i=>band(A[i])!='G'||(A[i].cap>=80&&!A[i].ex));if(o===undefined){log('CRM','All accounts healthy. Autopilot is watching.');return}await run(o)}
-$('#auto').onclick=e=>{const on=e.target.getAttribute('aria-pressed')!='true';e.target.setAttribute('aria-pressed',on);e.target.textContent=on?'Stop autopilot':'Start autopilot';if(on){tick();timer=setInterval(tick,2200)}else clearInterval(timer)};
+$('#portfolioAuto').onclick=e=>{const on=e.target.getAttribute('aria-pressed')!='true';e.target.setAttribute('aria-pressed',on);e.target.textContent=on?'Stop queue':'Run queue continuously';if(on){tick();timer=setInterval(tick,2200)}else clearInterval(timer)};
 $('#inj').onclick=()=>{const a=A[Math.floor(Math.random()*A.length)],r=Math.floor(Math.random()*3);
 if(r==0){a.u-=14;log('Product usage',`${a.n}: check-ins down 14% against baseline`)}else if(r==1){a.p+=5;log('Billing',`${a.n}: failed payments up to ${a.p}%`)}else{a.t+=2;a.q=Math.max(2,a.q-3);log('Support',`${a.n}: two new tickets and a low sentiment score`)}view()};
 $('#rst').onclick=()=>{A=mk();LOG=[];$('#log').innerHTML='';sel=0;log('CRM','Sample portfolio reloaded');view()};
-document.querySelectorAll('nav button').forEach(b=>b.onclick=()=>{document.querySelectorAll('nav button').forEach(x=>x.setAttribute('aria-pressed',x===b));document.querySelectorAll('.tab').forEach(t=>t.classList.toggle('on',t.id==b.dataset.tab))});
+
 $('#chips').innerHTML=SRC.map(s=>`<span class="chip">${s}</span>`).join('');
 /* onboarding */
 const OB=[['Readiness check','Exports, payment account and brand assets confirmed','Onboarding',10],['AI data mapping','2,340 members, 48 plans and 9,100 bookings mapped. 61 issues found, 54 fixed automatically, 7 sent for review','Claude',25],['Pilates launch pack','14 class types, 6 memberships, a waiver and 3 journeys applied','Product usage',15],['Validation report','Side-by-side totals shared for owner approval','CRM',15],['Go-live and first campaign','Cutover complete, first lead campaign drafted from brand data','Product usage',15],['Day 14 hypercare check','Usage reviewed and first Growth Audit scheduled','CRM',10]];
 const obDraw=n=>{$('#obs').innerHTML=OB.map((s,i)=>`<li class="${i<n?'d':''}"><b>${s[0]}</b> ${i<n?s[1]:''}</li>`).join('');$('#obp').style.width=n/OB.length*100+'%'};
-$('#obrun').onclick=async e=>{e.target.disabled=true;$('#obsum').textContent='';let m=0;for(let i=0;i<=OB.length;i++){obDraw(i);if(i<OB.length){await sleep(900);m+=OB[i][3];log(OB[i][2],'Harbor Pilates: '+OB[i][0].toLowerCase())}}obDraw(OB.length);$('#obsum').innerHTML=`<b>Specialist time: ${m} minutes</b> against about 3 hours in the manual flow (an assumption to verify). The owner approves once; everything else runs in the background.`;e.target.disabled=false};
+$('#obrun').onclick=async e=>{const version=manualVersion;e.target.disabled=true;$('#obsum').textContent='';let m=0;for(let i=0;i<=OB.length;i++){obDraw(i);if(i<OB.length){await sleep(900);if(version!==manualVersion)return;m+=OB[i][3];log(OB[i][2],'Harbor Pilates: '+OB[i][0].toLowerCase())}}obDraw(OB.length);$('#obsum').innerHTML=`<b>Specialist time: ${m} minutes</b> against about 3 hours in the manual flow (an assumption to verify). The owner approves once; everything else runs in the background.`;e.target.disabled=false};
 function cap(){const n=+$('#n').value;$('#nv').textContent=n;const lo=(sh,h)=>100+n*sh*h,m=lo(.25,3),f=lo(.15,1.5),mx=(240-100)/(.25*3),fx=(240-100)/(.15*1.5);
 const bar=(l,v)=>`<div class="bar"><span>${l}: ${Math.round(v)} hrs (${Math.round(v/240*100)}%)</span><span class="t" style="width:${Math.min(100,v/240*100)}%;background:${v>240?'var(--R)':v>204?'var(--A)':'var(--G)'}"></span></div>`;
 $('#cap').innerHTML=bar('Manual flow',m)+bar('With launch packs and AI mapping',f)+`<p style="margin-top:10px"><b>Inflow the pod can absorb: about ${Math.round(mx)} studios a month today, about ${Math.round(fx)} with the accelerator.</b></p>`}
@@ -182,11 +197,12 @@ $('#n').oninput=cap;
 /* ledger */
 const L=[['Franchisor and multi-location roll-up reporting',420,9,'Chains'],['High-volume billing, freezes and dunning',380,6,'Chains'],['Open-gym memberships without class booking',260,7,'Gyms'],['Access control: turnstiles and kiosks beyond door locks',290,5,'Gyms'],['Revenue splitting and instructor payouts',210,14,'Boutique'],['Self-serve setup for owners who start alone',150,22,'Boutique']];let F='All';
 function led(){const r=L.filter(x=>F=='All'||x[3]==F).sort((a,b)=>b[1]-a[1]);$('#led').innerHTML=r.map(x=>`<div class="bar"><span>${x[0]}<br><small class="mu">${x[3]}, ${x[2]} deals or escalations</small></span><span class="t" style="width:${x[1]/420*60}%"></span><b>$${x[1]}k</b></div>`).join('');
-$('#ledt').textContent=`ARR blocked in this view: $${r.reduce((s,x)=>s+x[1],0)}k`;$('#flt').innerHTML=['All','Chains','Gyms','Boutique'].map(k=>`<button data-k="${k}" aria-pressed="${k==F}">${k}</button>`).join('');document.querySelectorAll('#flt button').forEach(b=>b.onclick=()=>{F=b.dataset.k;led()})}
+$('#segmentHeading').textContent=(F==='All'?'All segments':F)+' · $'+r.reduce((total,row)=>total+row[1],0)+'k in tagged opportunities';
+$('#ledt').textContent=`Gross opportunity tags (may overlap): $${r.reduce((s,x)=>s+x[1],0)}k`;$('#flt').innerHTML=['All','Chains','Gyms','Boutique'].map(k=>`<button data-k="${k}" aria-pressed="${k==F}">${k}</button>`).join('');document.querySelectorAll('#flt button').forEach(b=>b.onclick=()=>{F=b.dataset.k;led()})}
 /* go-live assurance */
 const GS={mindbody:9,wellnessliving:6,'mariana tek':5,other:12},PD={stripe:5,modern:10,legacy:20},LN={A:[8,.5],B:[15,1],C:[25,1.5]};
 /* quote and audit */
-const TG=15,KN=['mindbody','wellnessliving','mariana tek'],HOL=['2026-12-25','2027-01-01'],LW={A:'1 to 3 locations on a source with a pre-built mapper',B:'4 to 10 locations, or a source without a pre-built mapper',C:'integrations or more than 10 locations'};
+const TG=10,KN=['mindbody','wellnessliving','mariana tek'],HOL=['2026-12-25','2027-01-01'],LW={A:'1 to 3 locations on a source with a pre-built mapper',B:'4 to 10 locations, or a source without a pre-built mapper',C:'integrations or more than 10 locations'};
 const pd=s=>new Date(s+'T00:00:00Z'),iso=d=>d.toISOString().slice(0,10),fd=d=>d.toUTCString().slice(0,16),wk=d=>d.getUTCDay()%6>0&&!HOL.includes(iso(d));
 function wdy(d,n){d=new Date(d);const s=n<0?-1:1;while(n){d.setUTCDate(d.getUTCDate()+s);if(wk(d))n-=s}return d}
 const route=(loc,src,it)=>it||loc>10?'C':loc<=3&&KN.includes(src.toLowerCase())?'A':'B';
@@ -206,7 +222,7 @@ $('#qo').innerHTML=`<p style="margin-top:12px"><b>Lane ${ln}.</b> <span class="m
 <div class="bar"><span>Lane work: ${r.lw} days</span><span class="t" style="width:${r.lw/mx*100}%"></span></div>
 <div class="bar"><span>Payment transfer: ${r.pw} days, in parallel</span><span class="t" style="width:${r.pw/mx*100}%;background:var(--A)"></span></div>
 <p class="sm mu">The longer path sets the date (${bind}), plus ${r.cap} days of capacity buffer${cl?' and 3 days of data cleanup':''}.</p>
-<p><span class="dec ${ok?'go':'no'}">${r.days} business days</span> <b>Commit ${fd(c)}.</b> <span class="sm">${ok?'Inside':'Over by '+(r.days-TG)+' days against'} the 3-week target.</span></p>
+<p><span class="dec ${ok?'go':'no'}">${r.days} business days</span> <b>Commit ${fd(c)}.</b> <span class="sm">${ok?'Inside':'Over by '+(r.days-TG)+' days against'} the two-week target.</span></p>
 ${[['Data received',g[0]],['Sandbox reviewed',g[1]],['Staff verified',g[2]],['Go or no-go decision',wdy(c,-2)]].map(x=>`<div class="sig"><span>${x[0]}</span><b>${fd(x[1])}</b></div>`).join('')}
 ${ok?'':`<p class="sm" style="margin-top:8px"><b>Levers to recover the date</b></p><ul class="sm" style="margin:4px 0;padding-left:18px">${lv.map(x=>`<li>${x}</li>`).join('')}</ul>`}`}
 const ENT=['Members','Active memberships','Class packs','Future bookings','Payment methods'],CHK=['Dry run passed','Payment test transaction','Rollback tested','Front-desk check-in verified','Owner sign-off'];
@@ -249,29 +265,227 @@ const GR=[['Harbor Pilates','Mindbody',2,'A','stripe',.5,-3,12,2,3,null,null,-2]
 let G,gd=0,gs=0,gf=0,gsel=0,gat=null,GL=[];
 const gmk=()=>GR.map(r=>({n:r[0],src:r[1],loc:r[2],lane:route(r[2],r[1],0),pay:r[4],load:r[5],s:r[6],lag:r[7],kd:r[8],sl:r[9],data:r[10],sb:null,sf:null,live:null,t:r[12],rem:null,rg:null}));
 const gcd=m=>qdays(m.lane,m.loc,m.pay,m.load,0).days;
-function gas(m){const c=gcd(m),due=[.25,.5,.7].map(x=>m.s+Math.round(c*x)),act=[m.data,m.sb,m.sf],sl=due.map((d,i)=>act[i]!=null?Math.max(0,act[i]-d):Math.max(0,gd-d)),tot=Math.max(...sl),cu=Math.min(tot,sl[0]+Math.max(0,sl[2]-Math.max(sl[1],sl[0]))),net=Math.max(0,tot-cu),cm=m.s+c,rb=cm+cu,fc=m.live!=null?m.live:rb+Math.max(0,net-2);
+function gas(m){const c=gcd(m),due=[.25,.5,.7].map(x=>m.s+Math.round(c*x)),act=[m.data,m.sb,m.sf],sl=due.map((d,i)=>act[i]!=null?Math.max(0,act[i]-d):Math.max(0,gd-d)),tot=Math.max(...sl),cu=Math.min(tot,sl[0]+Math.max(0,sl[2]-Math.max(sl[1],sl[0]))),net=Math.max(0,tot-cu),cm=m.s+c,rb=cm+cu,fc=m.live!=null?m.live:Math.max(gd+1,m.s+PD[m.pay],rb+Math.max(0,net-2));
 const gn=['data','sandbox','staff'],og=m.live!=null?null:act[0]==null?'data':act[1]==null?'sandbox':act[2]==null?'staff':'cutover',own=!og?'-':(og=='data'||og=='staff')?'Customer':'Kenko',late=og&&gn.includes(og)&&due[gn.indexOf(og)]<gd,idle=gd-m.t,stale=m.live==null&&idle>=3;
 const st=m.live!=null?(fc<=cm?'Live on time':fc<=rb?'Live, customer-delayed':'Live late (Kenko)'):fc>rb?'Red':(net>0||(own=='Customer'&&late)||stale)?'Amber':'Green';return{c,due,act,cm,fc,og,own,late,idle,stale,st,cu,risk:m.live==null&&fc>m.s+TG}}
 const glog=(w,t)=>{GL.unshift(`<div>Day ${gd} <b style="color:var(--bl)">${w}</b> ${t}</div>`);GL=GL.slice(0,40);$('#glg').innerHTML=GL.join('')};
 const gmsg=(m,a)=>`Hi ${m.n} team, a quick update on your move from ${m.src}. Your go-live is committed for day ${a.cm-m.s} and currently forecast for day ${a.fc-m.s}. The one thing we need from you is ${{data:'your member, membership, class pack and future booking exports',staff:'a 30-minute session with your front-desk team'}[a.og]||'one small step'}.${a.og=='data'?` Exports from ${m.src} usually take about ${GS[m.src.toLowerCase()]||12} business days, so asking today protects your date.`:''} Reply here and we will take care of the rest.`;
-function gstep(m){if(m.live!=null)return;if(m.data==null&&(gd>=m.s+m.lag||(m.rg=='data'&&gd>=m.rem+2))){m.data=gd;m.t=gd}else if(m.data!=null&&m.sb==null&&gd>=m.data+m.kd)m.sb=gd;else if(m.sb!=null&&m.sf==null&&(gd>=m.sb+m.sl||(m.rg=='staff'&&gd>=m.rem+2))){m.sf=gd;m.t=gd}else if(m.sf!=null&&gd>=m.sf+2){m.live=gd;glog('Onboarding',m.n+' is live on day '+(gd-m.s))}}
+function gstep(m){if(m.live!=null)return;if(m.data==null&&(gd>=m.s+m.lag||(m.rg=='data'&&gd>=m.rem+2))){m.data=gd;m.t=gd}else if(m.data!=null&&m.sb==null&&gd>=m.data+m.kd)m.sb=gd;else if(m.sb!=null&&m.sf==null&&(gd>=m.sb+m.sl||(m.rg=='staff'&&gd>=m.rem+2))){m.sf=gd;m.t=gd}else if(m.sf!=null&&gd>=Math.max(m.sf+2,m.s+PD[m.pay])){m.live=gd;glog('Onboarding',m.n+' is live on day '+(gd-m.s))}}
 function gnext(){gd++;G.forEach(m=>{gstep(m);if(m.live!=null)return;const a=gas(m),cust=a.own=='Customer';
 if(gat){if(cust&&(a.late||gd>=m.s+2)&&(m.rem==null||m.rg!=a.og||gd-m.rem>=3)){m.rem=gd;m.rg=a.og;m.t=gd;gs++;glog('Claude','Drafted and sent a '+a.og+' reminder to '+m.n+' naming '+m.src)}else if(a.stale){m.t=gd;gf++;glog('CRM','Follow-up task logged for '+m.n)}}
 else if(rng()<.15&&(a.stale||a.late)){m.t=gd;m.rem=gd;m.rg=a.og;gs++;glog('CSM','Manual follow-up sent to '+m.n)}});gv()}
-function gv(){const A=G.map(m=>[m,gas(m)]),fl=A.filter(x=>x[0].live==null),lv=A.filter(x=>x[0].live!=null);
+function gv(){renderBlockers();renderFinance();const A=G.map(m=>[m,gas(m)]),fl=A.filter(x=>x[0].live==null),lv=A.filter(x=>x[0].live!=null);
 $('#gday').textContent='Day '+gd;
-$('#gk').innerHTML=`<div class="pn"><span class="mu sm">In flight</span><b>${fl.length}</b></div><div class="pn"><span class="mu sm">Three-week promise at risk</span><b style="color:var(--R)">${fl.filter(x=>x[1].risk).length}</b></div><div class="pn"><span class="mu sm">Blocked on customer</span><b style="color:var(--A)">${fl.filter(x=>x[1].own=='Customer').length}</b></div><div class="pn"><span class="mu sm">No touch for 3+ days</span><b>${fl.filter(x=>x[1].stale).length}</b></div><div class="pn"><span class="mu sm">Live on time, of live</span><b style="color:var(--G)">${lv.filter(x=>x[1].st=='Live on time').length} of ${lv.length}</b></div><div class="pn"><span class="mu sm">Customer reminders, follow-ups</span><b>${gs}, ${gf}</b></div>`;
+$('#gk').innerHTML=`<div class="pn"><span class="mu sm">In flight</span><b>${fl.length}</b></div><div class="pn"><span class="mu sm">Two-week target at risk</span><b style="color:var(--R)">${fl.filter(x=>x[1].risk).length}</b></div><div class="pn"><span class="mu sm">Blocked on customer</span><b style="color:var(--A)">${fl.filter(x=>x[1].own=='Customer').length}</b></div><div class="pn"><span class="mu sm">No touch for 3+ days</span><b>${fl.filter(x=>x[1].stale).length}</b></div><div class="pn"><span class="mu sm">Live on time, of live</span><b style="color:var(--G)">${lv.filter(x=>x[1].st=='Live on time').length} of ${lv.length}</b></div><div class="pn"><span class="mu sm">Customer reminders, follow-ups</span><b>${gs}, ${gf}</b></div>`;
 const bc={Red:'R',Amber:'A',Green:'G','Live on time':'G','Live, customer-delayed':'A','Live late (Kenko)':'R'},o={Red:0,Amber:1,Green:2};
 A.sort((x,y)=>(x[0].live!=null)-(y[0].live!=null)||o[x[1].st]-o[y[1].st]);
 $('#gtb').innerHTML=A.map(x=>{const m=x[0],a=x[1],i=G.indexOf(m);return `<button class="q" data-g="${i}" aria-pressed="${i==gsel}"><span class="bd b${bc[a.st]}" title="${a.st}">${bc[a.st]}</span><span class="n">${m.n}<small>${m.src}, day ${Math.max(0,gd-m.s)} of ${a.c}, ${m.live!=null?a.st:'blocked on '+(a.og=='cutover'?'cutover':a.og)+' ('+a.own+')'}${a.stale?', no touch '+a.idle+' days':''}</small></span></button>`}).join('');
 document.querySelectorAll('[data-g]').forEach(b=>b.onclick=()=>{gsel=+b.dataset.g;gv()});
 const m=G[gsel],a=gas(m),nm=['data','sandbox','staff'];
-$('#gdt').innerHTML=`<h3>${m.n}</h3><p class="mu sm">${m.src}, ${m.loc} ${m.loc>1?'locations':'location'}, lane ${m.lane}, ${m.pay} payments. Committed day ${a.cm-m.s}, forecast day ${a.fc-m.s}.</p>`+['Data received','Sandbox reviewed','Staff verified'].map((l,i)=>`<div class="sig"><span>${l}</span><span class="mu">due day ${a.due[i]-m.s}</span><b>${a.act[i]!=null?'done day '+(a.act[i]-m.s):(gd>a.due[i]?'late':'waiting')}</b></div>`).join('')+(m.live!=null?'<p><b>Live.</b></p>':`<h3 style="margin-top:12px">Draft proactive update</h3><p class="sm" style="border-left:3px solid var(--bl);padding-left:10px">${gmsg(m,a)}</p>`)}
+$('#gdt').innerHTML=`<h3>${m.n}</h3><p class="mu sm">${m.src}, ${m.loc} ${m.loc>1?'locations':'location'}, lane ${m.lane}, ${m.pay} payments. Committed day ${a.cm-m.s}, forecast day ${a.fc-m.s}.</p>`+['Data received','Sandbox reviewed','Staff verified'].map((l,i)=>`<div class="sig"><span>${l}</span><span class="mu">due day ${a.due[i]-m.s}</span><b>${a.act[i]!=null?'done day '+(a.act[i]-m.s):(gd>a.due[i]?'late':'waiting')}</b></div>`).join('')+(m.live!=null?'<p><b>Live.</b></p>':`<h3 style="margin-top:12px">Draft proactive update</h3><p class="sm" style="border-left:3px solid var(--bl);padding-left:10px">${gmsg(m,a)}</p>`)+blockerPanel(m)}
 function ginit(){rs=7;G=gmk();gd=0;gs=0;gf=0;GL=[];$('#glg').innerHTML='';glog('CRM','Eight migrations loaded');gv()}
 $('#gsrc').innerHTML=Object.entries(GS).map(([k,v])=>`<div class="bar"><span style="width:130px">${k[0].toUpperCase()+k.slice(1)}</span><span class="t" style="width:${v*14}px"></span><b>${v}</b></div>`).join('');
 $('#gnx').onclick=gnext;$('#grs').onclick=ginit;
 $('#gau').onclick=e=>{gat=!gat;e.target.setAttribute('aria-pressed',!!gat);e.target.textContent='Autopilot follow-ups: '+(gat?'on':'off')};
-A=mk();log('CRM','Sample portfolio loaded: 12 accounts');view();obDraw(0);cap();led();ginit();qinit();
+
+ const anchor=pd('2026-11-20'), closeDate='2026-11-30';
+ const contractTerms={
+  'Harbor Pilates':[850,'Launch'], 'Lumen Yoga':[575,'Launch'], 'Atlas Training':[2400,'Launch'], 'Bloom Barre':[395,'Signature'],
+  'Cadence Dance':[1200,'Launch'], 'Nova Lagree':[975,'Launch'], 'Orbit Cycle':[650,'Signature'], 'Pine Pole Studio':[325,'Launch']
+ };
+ const gateWork={
+  data:['Onboarding lead + studio admin','Confirm when the provider request was sent and validate the first export.'],
+  sandbox:['Migration specialist','Reconcile source totals and clear mapping exceptions.'],
+  staff:['Studio manager + coach','Book training and verify front-desk check-in.'],
+  cutover:['Implementation lead','Review the audit and obtain owner sign-off.']
+ };
+ const money=n=>new Intl.NumberFormat('en-US',{style:'currency',currency:'USD',maximumFractionDigits:0}).format(n);
+ const dateAt=n=>iso(wdy(anchor,n));
+ const shortDate=s=>pd(s).toLocaleDateString('en-US',{month:'short',day:'numeric',timeZone:'UTC'});
+ function invoiceRow(m){
+   const a=gas(m),[fee,trigger]=contractTerms[m.n];
+   const signed=dateAt(m.s-2),committed=dateAt(a.cm),forecast=dateAt(a.fc);
+   const planned=trigger==='Signature'?signed:committed, revised=trigger==='Signature'?signed:forecast;
+   const before=planned<=closeDate?fee:0, after=revised<=closeDate?fee:0;
+   const gateIndex=['data','sandbox','staff'].indexOf(a.og);
+   const due=gateIndex<0?a.cm:a.due[gateIndex];
+   return {m,a,fee,trigger,signed,committed,forecast,planned,revised,before,after,delta:after-before,due};
+ }
+ function renderFinance(){
+   const rows=G.map(invoiceRow).sort((x,y)=>x.delta-y.delta||(y.a.fc-y.a.cm)-(x.a.fc-x.a.cm)||y.fee-x.fee);
+   const sum=fn=>rows.reduce((t,r)=>t+fn(r),0);
+   const metrics=[['Planned through close',sum(r=>r.before)],['Moved past close',sum(r=>Math.min(0,r.delta))],['Moved into close',sum(r=>Math.max(0,r.delta))],['Revised through close',sum(r=>r.after)]];
+   $('#bridge').innerHTML=metrics.map(([label,v])=>`<div><small>${label}</small><strong>${money(v)}</strong></div>`).join('');
+   $('#asof').textContent='Simulation day '+gd+' · As of '+shortDate(dateAt(gd))+' · November 30 close · USD';
+   $('#exposure').innerHTML=rows.map(r=>`<tr><th scope="row">${r.m.n}</th><td>${r.trigger}</td><td>${money(r.fee)}</td><td>${shortDate(r.committed)} → ${shortDate(r.forecast)}</td><td>${r.a.og||'Live'}</td><td>${money(r.delta)}</td></tr>`).join('');
+   const lead=rows.find(r=>r.m.live==null);
+   if(!lead){$('#decision').textContent='All eight launches are complete. Reconcile forecast first invoices against the billing run.';return;}
+   const [owner,action]=gateWork[lead.a.og],deadline=shortDate(dateAt(lead.due));
+   $('#decision').innerHTML=`<h3>${lead.m.n} · ${lead.a.og} checkpoint</h3><p>${owner} · ${lead.due<gd?'Overdue since':'Due'} ${deadline}. ${action}</p><p>${lead.delta<0?money(lead.fee)+' moves beyond November close. Reforecast the first invoice unless the checkpoint owner confirms recovery.':'Keep the invoice date under review until the checkpoint owner confirms the remaining work.'}</p>`;
+ }
+
+
+ function selectTab(id){
+  document.querySelectorAll('[data-tab]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.tab===id)));
+  document.querySelectorAll('.tab').forEach(t=>t.classList.toggle('on',t.id===id));
+ }
+ function filterLedger(segment){F=segment;led();}
+ function followups(on){gat=on;$('#gau').setAttribute('aria-pressed',String(on));$('#gau').textContent='Autopilot follow-ups: '+(on?'on':'off');}
+ function finishPlaybook(){const a=A[sel],p=PB[pick(a)];p.s.forEach(([src,msg])=>log(src,msg));p.f(a);view();}
+ function onboard(n){obDraw(n);if(n===OB.length)$('#obsum').textContent='Simulated specialist time: '+OB.reduce((t,s)=>t+s[3],0)+' minutes. Manual scenario: 180 minutes.';}
+// The file-receipt gate represents a usable export in this synthetic cohort.
+function blockerPanel(m){
+  const a=gas(m), milestones=[
+    [m.data,'Usable export accepted'],[m.sb,'Mapping reconciled in sandbox'],
+    [m.sf,'Front desk verified'],[m.live,'Production launch confirmed']
+  ];
+  const closed=milestones.filter(([day])=>day!=null);
+  const last=closed.length?closed[closed.length-1]:null;
+  const evidence=last?closed.map(([day,label])=>label+' ('+shortDate(dateAt(day))+')').join(' → '):'Kickoff completed · '+shortDate(dateAt(m.s));
+  const gate=a.og;
+  let owner='Implementation lead',work='',proof='',escalation='';
+  if(gate){
+    [owner,work]=gateWork[gate];
+    proof={data:'A usable export passes intake validation.',sandbox:'Source and sandbox totals reconcile.',staff:'The studio completes a front-desk check-in.',cutover:'Pre-launch checks pass and the studio confirms production access.'}[gate];
+    escalation={data:'If the file misses its due date, call the studio admin. If the provider holds the export, obtain its request number and ETA.',sandbox:'If reconciliation is late, the migration lead assigns an engineer and rebooks the review.',staff:'If the session is missed, the coach contacts the studio manager and books the next available slot.',cutover:'If a check fails, hold launch, assign the exception and give Finance a revised invoice date.'}[gate];
+  }
+  const at=gate?invoiceRow(m):null;
+  const side=gate?(a.own==='Customer'?'Studio dependency':'Kenko dependency'):'Resolved';
+  const paymentWait=gate==='cutover' && gd<m.s+PD[m.pay];
+  if(paymentWait){
+    owner='Payments specialist + processor';
+    work='Confirm the transfer ETA and keep the first live transaction on hold until the processor clears it.';
+    proof='Transfer completes and the payment test and launch checks pass.';
+    escalation='If the ETA threatens the commitment, escalate to the processor and revise the invoice forecast with Finance.';
+  }
+  return '<article class="casecard"><div class="casehead"><h3>'+m.n+'</h3><strong>'+side+'</strong></div><dl><dt>Verified in the simulation</dt><dd>'+evidence+'</dd>'+
+    (gate?'<dt>Open work</dt><dd>'+work+'</dd><dt>Accountable follow-up</dt><dd>Kenko onboarding lead · '+owner+' · checkpoint '+shortDate(dateAt(at.due))+'</dd><dt>Escalation</dt><dd>'+escalation+'</dd><dt>Clears when</dt><dd>'+proof+'</dd>':'<dt>Outcome</dt><dd>Live on business day '+(m.live-m.s)+' against the day-10 target.</dd>')+'</dl></article>';
+}
+function renderBlockers(){
+  const selected=G[gsel];
+  const comparison=G.find(m=>m.live==null && gas(m).own!==gas(selected).own);
+  $('#blockerCases').innerHTML=[selected,comparison].filter(Boolean).map(blockerPanel).join('');
+  const live=G.filter(m=>m.live!=null),late=G.filter(m=>m.live==null&&gas(m).late);
+  $('#caseCount').textContent='Simulation day '+gd+' · '+live.length+' of '+G.length+' live · '+late.length+' overdue checkpoints';
+}
+// Day-zero baseline projects the seeded workflow without reminder-driven acceleration.
+function standardLaunch(m){
+  const data=m.data??Math.max(1,m.s+m.lag);
+  const sandbox=Math.max(1,data+m.kd),staff=sandbox+m.sl;
+  return Math.max(staff+2,m.s+PD[m.pay]);
+}
+function unitEconomics(){
+  const rate=Number($('#laborRate').value),touch=Number($('#touchMinutes').value)/60;
+  const recovery=Number($('#recoveryHours').value);
+  const cohort=gmk(),late=[],fixed=[];
+  let excess=0,earlierInvoices=0;
+  for(const m of cohort){
+    const base=standardLaunch(m),target=Math.min(base,m.s+TG);
+    const days=base-target;
+    if(days>0)late.push(m.n);
+    if(PD[m.pay]>TG)fixed.push(m.n);
+    excess+=days;
+    const [fee,trigger]=contractTerms[m.n];
+    if(trigger==='Launch' && dateAt(base)>closeDate && dateAt(target)<=closeDate)earlierInvoices+=fee;
+  }
+  const grossHours=excess*touch,addedHours=late.length*recovery;
+  return {total:cohort.length,late:late.length,fixed,excess,grossHours,addedHours,net:(grossHours-addedHours)*rate,rate,earlierInvoices};
+}
+function renderEconomics(){
+  const s=unitEconomics(),base=s.total-s.late;
+  $('#economicsKpis').innerHTML=[
+   ['Standard path',base+' / '+s.total+' by day 10'],['Target scenario',s.total+' / '+s.total+' by day 10'],
+   ['Extra account-days removed',String(s.excess)],['Net capacity value',money(s.net)]
+  ].map(([l,v])=>'<div><small>'+l+'</small><strong>'+v+'</strong></div>').join('');
+  $('#econCalc').textContent=s.grossHours.toFixed(1)+' coordination hours avoided − '+s.addedHours.toFixed(1)+' recovery hours = '+(s.grossHours-s.addedHours).toFixed(1)+' net hours × '+money(s.rate)+'/hour. Capacity value becomes cash savings only if spend falls.';
+  $('#econBilling').textContent=money(s.earlierInvoices)+' of first invoices would move into November. Signature-triggered invoices keep their dates. Billing timing is reported separately from labor value.';
+  $('#econDecision').textContent='Decision: '+s.fixed.join(', ')+' has a 20-business-day payment transfer. To deliver all eight by day 10, confirm an earlier processor start or an approved alternative before promising the date. Additional vendor fees reduce the modeled benefit dollar for dollar.';
+  $('#econBreak').textContent='Break-even recovery effort: '+(s.late?s.grossHours/s.late:0).toFixed(1)+' hours per late studio, before external costs.';
+}
+
+ const scenes=[
+ ['cc','#kpi','Which accounts need intervention?',4500,()=>{sel=order()[0];view();}],
+ ['cc','#detail','Inspect the highest-priority account and its recovery playbook.',4500,()=>detail(1)],
+ ['cc','#log','Review the actions taken in the simulated recovery.',4200,finishPlaybook],
+ ['ob','#obs','Validate the export and review mapping exceptions.',4200,()=>onboard(2)],
+ ['ob','#obs','Reconcile totals, launch and verify adoption.',4500,()=>onboard(OB.length)],
+ ['ob','#cap','Compare planned intake with available specialist hours.',4500,()=>{$('#n').value=200;cap();}],
+ ['gl','#finance','Start with eight contracts. Check which first invoices move across November close.',3500,()=>{gsel=0;ginit();followups(true);}],
+ ['gl','#decision','Advance one business day. Review the highest-priority open checkpoint and its invoice impact.',4000,gnext],
+ ['gl','#blockers','Harbor needs a usable export. Compare that studio dependency with work owned by Kenko.',7000,renderBlockers],
+ ['gl','#qo','Quote a launch with a legacy payment processor. Check the binding lead time.',5000,()=>{$('#qp').value='legacy';qr();}],
+ ['gl','#ao','Hold cutover while record counts and sign-offs are outstanding.',4700,()=>aLoad('gaps')],
+ ['gl','#ao','Recheck a corrected sample and verify that all ten checks pass.',4000,()=>aLoad('clean')],
+ ['gl','#gday','Advance another business day. Inspect the migration queue and follow-up counters.',3400,gnext],
+ ['gl','#gday','Advance one more day. See which checkpoints are still open.',3200,gnext],
+ ['gl','#finance','Revisit the first-invoice forecast after the checkpoints update.',5500,renderFinance],
+ ['gl','#blockers','Recheck the evidence after the intervention. A reminder alone cannot clear an export checkpoint.',6500,renderBlockers],
+ ['gl','#blockers','Fast-forward to the outcome: verified launches and the actual elapsed days for the sample accounts.',6000,()=>{for(let n=0;n<50&&G.some(m=>m.live==null);n++)gnext();gsel=2;gv();}],
+ ['gl','#economics','Compare the original delivery path with eight launches by day ten. Separate capacity value from earlier billing.',9500,renderEconomics],
+ ['pl','#ledgerPanel','Compare opportunities tagged to requests across all segments.',4500,()=>filterLedger('All')],
+ ['pl','#ledgerPanel','Inspect multi-location demand and billing exceptions for chains.',4200,()=>filterLedger('Chains')],
+ ['pl','#ledgerPanel','Inspect membership and access-control demand from gyms.',4000,()=>filterLedger('Gyms')],
+ ['pl','#ledgerPanel','Review boutique requests. Deduplicate opportunities before funding work.',5000,()=>filterLedger('Boutique')]
+ ];
+ let tourState='idle',sceneIndex=-1,tourTimer=null,manualVersion=0;
+ function tourControls(){
+  const running=tourState==='playing',paused=tourState==='paused';
+  $('#auto').textContent=running?'Pause tour':paused?'Resume tour':tourState==='complete'?'Replay full demo':'Run full demo';
+  $('#exitTour').hidden=!(running||paused);
+  const title=sceneIndex<0?'':document.querySelector('[data-tab="'+scenes[sceneIndex][0]+'"]').textContent;
+  $('#tourStep').textContent=sceneIndex<0?'Four views':title+' · '+(tourState==='complete'?'Complete':(sceneIndex+1)+' / '+scenes.length);
+ }
+ function stopTour(){clearTimeout(tourTimer);tourState='idle';sceneIndex=-1;$('#tourCopy').textContent='Explore manually or play the guided walkthrough.';tourControls();}
+ function scheduleScene(){
+  clearTimeout(tourTimer);
+  tourTimer=setTimeout(()=>{
+   if(tourState!=='playing')return;
+   if(sceneIndex===scenes.length-1){tourState='complete';tourControls();return;}
+   enterScene(sceneIndex+1);
+  },scenes[sceneIndex][3]);
+ }
+ function enterScene(i){
+  sceneIndex=i;const [tab,target,caption,,act]=scenes[i];
+  selectTab(tab);act();$('#tourCopy').textContent=caption;tourControls();
+  $(target).scrollIntoView({block:'start',behavior:matchMedia('(prefers-reduced-motion: reduce)').matches?'auto':'smooth'});
+  scheduleScene();
+ }
+ function startTour(firstScene=0){
+  manualVersion++;clearInterval(timer);busy=false;
+  $('#portfolioAuto').setAttribute('aria-pressed','false');$('#portfolioAuto').textContent='Run queue continuously';
+  A=mk();sel=0;LOG=[];log('CRM','Sample portfolio loaded');view();
+  $('#obrun').disabled=false;$('#obsum').textContent='';obDraw(0);$('#n').value=170;cap();
+  $('#ql').value=2;$('#qtl').value=60;
+  for(const id of ['#qs','#qp','#qq','#qi'])$(id).selectedIndex=0;
+  qinit();followups(false);gsel=0;ginit();filterLedger('All');
+  tourState='playing';enterScene(firstScene);
+ }
+ $('#auto').onclick=()=>{
+  if(tourState==='playing'){clearTimeout(tourTimer);tourState='paused';tourControls();}
+  else if(tourState==='paused'){tourState='playing';tourControls();scheduleScene();}
+  else startTour();
+ };
+ $('#exitTour').onclick=stopTour;
+ document.querySelectorAll('[data-tab]').forEach(button=>{
+  button.onclick=()=>{
+    const firstScene=scenes.findIndex(([tab])=>tab===button.dataset.tab);
+    if(tourState==='playing'||tourState==='paused'){
+      clearTimeout(tourTimer);
+      tourState='playing';
+      enterScene(firstScene);
+    }else{
+      startTour(firstScene);
+    }
+  };
+ });
+ for(const evt of ['click','input'])document.addEventListener(evt,e=>{
+  if((tourState==='playing'||tourState==='paused')&&e.target.closest('.tab button,.tab input,.tab select'))stopTour();
+ },true);
+ tourControls();
+
+for(const id of ['laborRate','touchMinutes','recoveryHours'])$('#'+id).onchange=renderEconomics;
+renderEconomics();
+startTour();
 </script>
 </body>
 </html>
