@@ -60,6 +60,8 @@ footer{margin-top:36px;border-top:1px solid var(--ln);padding-top:14px;font-size
 #finance{margin:14px 0 20px;border-top:3px solid var(--bl)}#bridge{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin:14px 0}#bridge>div{background:var(--bg);padding:10px;border-radius:6px}#bridge small{display:block;color:var(--mu)}#bridge strong{font:700 1.65rem var(--hf)}
 #decision{padding:12px;border-left:3px solid var(--bl);background:var(--bg);margin:14px 0}#decision p{margin:5px 0 0}.wide{overflow-x:auto}.wide td,.wide th{white-space:nowrap}.wide th:first-child{text-align:left}
 @media(max-width:700px){#bridge{grid-template-columns:1fr 1fr}.tourbar{gap:6px;padding:6px 8px}.tourbar p{font-size:.84rem}.tab,.tab [id]{scroll-margin-top:150px}.g2,.grid,.kpi{grid-template-columns:minmax(0,1fr)}.grid>*{min-width:0}}
+#segmentHeading{margin-bottom:12px}#tourStep{font-size:.85rem}.tourbar{scroll-margin:0}
+@media(prefers-reduced-motion:no-preference){#led .bar .t{transform-origin:left;animation:ledgerReveal .5s ease-out}@keyframes ledgerReveal{from{transform:scaleX(0)}to{transform:scaleX(1)}}}
 </style>
 </head>
 <body>
@@ -69,7 +71,7 @@ footer{margin-top:36px;border-top:1px solid var(--ln);padding-top:14px;font-size
 <p class="mu" style="margin-top:10px">Follow a studio from portfolio review through migration, first billing and product investment. All accounts and financial terms are illustrative.</p>
 <nav aria-label="Views"><button data-tab="cc" aria-pressed="true">Command center</button><button data-tab="ob" aria-pressed="false">Onboarding accelerator</button><button data-tab="gl" aria-pressed="false">Go-live assurance</button><button data-tab="pl" aria-pressed="false">Product demand ledger</button></nav>
 </header>
-<div class="tourbar" role="region" aria-label="Guided walkthrough"><button id="auto" class="pri">Run full demo</button><button id="exitTour" hidden>Exit tour</button><b id="tourStep">Four views</b><p id="tourCopy" aria-live="polite">One click plays all four views and scrolls to each decision.</p></div>
+<div class="tourbar" role="region" aria-label="Guided walkthrough"><button id="auto" class="pri">Run full demo</button><button id="exitTour" hidden>Exit tour</button><b id="tourStep">Four views</b><p id="tourCopy" aria-live="polite">Run the full demo or select a tab to play from that view.</p></div>
 
 <section id="cc" class="tab on">
 <div class="kpi" id="kpi"></div>
@@ -125,7 +127,7 @@ footer{margin-top:36px;border-top:1px solid var(--ln);padding-top:14px;font-size
 <section id="pl" class="tab">
 <h2>Product demand ledger</h2>
 <p class="mu" style="max-width:70ch">Compare demand by segment. A deal may appear under several requests. Deduplicate opportunities and confirm buying intent before funding development.</p>
-<div class="pn"><div style="display:flex;flex-wrap:wrap;gap:6px" id="flt"></div><div id="led" style="margin-top:12px"></div><p id="ledt" style="font-weight:700;margin-top:10px"></p></div>
+<div class="pn" id="ledgerPanel"><h3 id="segmentHeading"></h3><div style="display:flex;flex-wrap:wrap;gap:6px" id="flt"></div><div id="led" style="margin-top:12px"></div><p id="ledt" style="font-weight:700;margin-top:10px"></p></div>
 </section>
 
 <footer>Emulator only. No live connections are made: the feed simulates read-only calls to billing, support, product usage, CRM, onboarding and engineering tools. Scores come from fixed rules, and the language model only explains and drafts. Financial terms, thresholds and timing assumptions are synthetic.</footer>
@@ -190,6 +192,7 @@ $('#n').oninput=cap;
 /* ledger */
 const L=[['Franchisor and multi-location roll-up reporting',420,9,'Chains'],['High-volume billing, freezes and dunning',380,6,'Chains'],['Open-gym memberships without class booking',260,7,'Gyms'],['Access control: turnstiles and kiosks beyond door locks',290,5,'Gyms'],['Revenue splitting and instructor payouts',210,14,'Boutique'],['Self-serve setup for owners who start alone',150,22,'Boutique']];let F='All';
 function led(){const r=L.filter(x=>F=='All'||x[3]==F).sort((a,b)=>b[1]-a[1]);$('#led').innerHTML=r.map(x=>`<div class="bar"><span>${x[0]}<br><small class="mu">${x[3]}, ${x[2]} deals or escalations</small></span><span class="t" style="width:${x[1]/420*60}%"></span><b>$${x[1]}k</b></div>`).join('');
+$('#segmentHeading').textContent=(F==='All'?'All segments':F)+' · $'+r.reduce((total,row)=>total+row[1],0)+'k in tagged opportunities';
 $('#ledt').textContent=`Gross opportunity tags (may overlap): $${r.reduce((s,x)=>s+x[1],0)}k`;$('#flt').innerHTML=['All','Chains','Gyms','Boutique'].map(k=>`<button data-k="${k}" aria-pressed="${k==F}">${k}</button>`).join('');document.querySelectorAll('#flt button').forEach(b=>b.onclick=()=>{F=b.dataset.k;led()})}
 /* go-live assurance */
 const GS={mindbody:9,wellnessliving:6,'mariana tek':5,other:12},PD={stripe:5,modern:10,legacy:20},LN={A:[8,.5],B:[15,1],C:[25,1.5]};
@@ -308,7 +311,7 @@ $('#gau').onclick=e=>{gat=!gat;e.target.setAttribute('aria-pressed',!!gat);e.tar
    const sum=fn=>rows.reduce((t,r)=>t+fn(r),0);
    const metrics=[['Planned through close',sum(r=>r.before)],['Moved past close',sum(r=>Math.min(0,r.delta))],['Moved into close',sum(r=>Math.max(0,r.delta))],['Revised through close',sum(r=>r.after)]];
    $('#bridge').innerHTML=metrics.map(([label,v])=>`<div><small>${label}</small><strong>${money(v)}</strong></div>`).join('');
-   $('#asof').textContent='As of '+shortDate(dateAt(gd))+' · November 30 close · USD';
+   $('#asof').textContent='Simulation day '+gd+' · As of '+shortDate(dateAt(gd))+' · November 30 close · USD';
    $('#exposure').innerHTML=rows.map(r=>`<tr><th scope="row">${r.m.n}</th><td>${r.trigger}</td><td>${money(r.fee)}</td><td>${shortDate(r.committed)} → ${shortDate(r.forecast)}</td><td>${r.a.og||'Live'}</td><td>${money(r.delta)}</td></tr>`).join('');
    const lead=rows.find(r=>r.m.live==null);
    if(!lead){$('#decision').textContent='All eight launches are complete. Reconcile forecast first invoices against the billing run.';return;}
@@ -332,24 +335,26 @@ $('#gau').onclick=e=>{gat=!gat;e.target.setAttribute('aria-pressed',!!gat);e.tar
  ['ob','#obs','Validate the export and review mapping exceptions.',4200,()=>onboard(2)],
  ['ob','#obs','Reconcile totals, launch and verify adoption.',4500,()=>onboard(OB.length)],
  ['ob','#cap','Compare planned intake with available specialist hours.',4500,()=>{$('#n').value=200;cap();}],
- ['gl','#finance','Which first invoices move across month-end?',6500,renderFinance],
- ['gl','#decision','Identify the blocker, its owner and the decision for Finance.',6500,()=>{}],
+ ['gl','#finance','Start with eight contracts. Check which first invoices move across November close.',3500,()=>{gsel=0;ginit();followups(true);}],
+ ['gl','#decision','Advance one business day. Review the highest-priority open checkpoint and its invoice impact.',4000,gnext],
  ['gl','#qo','Quote a launch with a legacy payment processor. Check the binding lead time.',5000,()=>{$('#qp').value='legacy';qr();}],
  ['gl','#ao','Hold cutover while record counts and sign-offs are outstanding.',4700,()=>aLoad('gaps')],
  ['gl','#ao','Recheck a corrected sample and verify that all ten checks pass.',4000,()=>aLoad('clean')],
- ['gl','#gk','Advance three business days with proactive follow-ups enabled.',4500,()=>{followups(true);for(let i=0;i<3;i++)gnext();}],
+ ['gl','#gday','Advance another business day. Inspect the migration queue and follow-up counters.',3400,gnext],
+ ['gl','#gday','Advance one more day. See which checkpoints are still open.',3200,gnext],
  ['gl','#finance','Revisit the first-invoice forecast after the checkpoints update.',5500,renderFinance],
- ['pl','#flt','Compare opportunities tagged to requests across all segments.',4500,()=>filterLedger('All')],
- ['pl','#led','Inspect multi-location demand and billing exceptions for chains.',4200,()=>filterLedger('Chains')],
- ['pl','#led','Inspect membership and access-control demand from gyms.',4000,()=>filterLedger('Gyms')],
- ['pl','#led','Review boutique requests. Deduplicate opportunities before funding work.',5000,()=>filterLedger('Boutique')]
+ ['pl','#ledgerPanel','Compare opportunities tagged to requests across all segments.',4500,()=>filterLedger('All')],
+ ['pl','#ledgerPanel','Inspect multi-location demand and billing exceptions for chains.',4200,()=>filterLedger('Chains')],
+ ['pl','#ledgerPanel','Inspect membership and access-control demand from gyms.',4000,()=>filterLedger('Gyms')],
+ ['pl','#ledgerPanel','Review boutique requests. Deduplicate opportunities before funding work.',5000,()=>filterLedger('Boutique')]
  ];
  let tourState='idle',sceneIndex=-1,tourTimer=null,manualVersion=0;
  function tourControls(){
   const running=tourState==='playing',paused=tourState==='paused';
   $('#auto').textContent=running?'Pause tour':paused?'Resume tour':tourState==='complete'?'Replay full demo':'Run full demo';
   $('#exitTour').hidden=!(running||paused);
-  $('#tourStep').textContent=sceneIndex<0?'Four views':(tourState==='complete'?'Complete · ':'')+(sceneIndex+1)+' / '+scenes.length;
+  const title=sceneIndex<0?'':document.querySelector('[data-tab="'+scenes[sceneIndex][0]+'"]').textContent;
+  $('#tourStep').textContent=sceneIndex<0?'Four views':title+' · '+(tourState==='complete'?'Complete':(sceneIndex+1)+' / '+scenes.length);
  }
  function stopTour(){clearTimeout(tourTimer);tourState='idle';sceneIndex=-1;$('#tourCopy').textContent='Explore manually or play the guided walkthrough.';tourControls();}
  function scheduleScene(){
@@ -363,10 +368,10 @@ $('#gau').onclick=e=>{gat=!gat;e.target.setAttribute('aria-pressed',!!gat);e.tar
  function enterScene(i){
   sceneIndex=i;const [tab,target,caption,,act]=scenes[i];
   selectTab(tab);act();$('#tourCopy').textContent=caption;tourControls();
-  $(target).scrollIntoView({block:'start',behavior:matchMedia('(prefers-reduced-motion: reduce)').matches?'instant':'smooth'});
+  $(target).scrollIntoView({block:'start',behavior:matchMedia('(prefers-reduced-motion: reduce)').matches?'auto':'smooth'});
   scheduleScene();
  }
- function startTour(){
+ function startTour(firstScene=0){
   manualVersion++;clearInterval(timer);busy=false;
   $('#portfolioAuto').setAttribute('aria-pressed','false');$('#portfolioAuto').textContent='Run queue continuously';
   A=mk();sel=0;LOG=[];log('CRM','Sample portfolio loaded');view();
@@ -374,7 +379,7 @@ $('#gau').onclick=e=>{gat=!gat;e.target.setAttribute('aria-pressed',!!gat);e.tar
   $('#ql').value=2;$('#qtl').value=60;
   for(const id of ['#qs','#qp','#qq','#qi'])$(id).selectedIndex=0;
   qinit();followups(false);gsel=0;ginit();filterLedger('All');
-  tourState='playing';enterScene(0);
+  tourState='playing';enterScene(firstScene);
  }
  $('#auto').onclick=()=>{
   if(tourState==='playing'){clearTimeout(tourTimer);tourState='paused';tourControls();}
@@ -382,7 +387,18 @@ $('#gau').onclick=e=>{gat=!gat;e.target.setAttribute('aria-pressed',!!gat);e.tar
   else startTour();
  };
  $('#exitTour').onclick=stopTour;
- document.querySelectorAll('[data-tab]').forEach(b=>b.onclick=()=>{stopTour();selectTab(b.dataset.tab);});
+ document.querySelectorAll('[data-tab]').forEach(button=>{
+  button.onclick=()=>{
+    const firstScene=scenes.findIndex(([tab])=>tab===button.dataset.tab);
+    if(tourState==='playing'||tourState==='paused'){
+      clearTimeout(tourTimer);
+      tourState='playing';
+      enterScene(firstScene);
+    }else{
+      startTour(firstScene);
+    }
+  };
+ });
  for(const evt of ['click','input'])document.addEventListener(evt,e=>{
   if((tourState==='playing'||tourState==='paused')&&e.target.closest('.tab button,.tab input,.tab select'))stopTour();
  },true);
